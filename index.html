@@ -1,3 +1,5 @@
+حب نسيت كلمة المرور لاتعمل ليش
+
 <!DOCTYPE html>
 
 <html lang="ar" dir="rtl" data-lang="ar">
@@ -314,11 +316,10 @@ html[data-lang="en"] .notif-dot { left:-2px; right:auto; }
     <input class="auth-input" type="email" id="userEmail" placeholder="البريد الإلكتروني">
     <input class="auth-input" type="password" id="userPass" placeholder="كلمة المرور">
 
- <p style="text-align: left; font-size: 0.75em; color: var(--gold); cursor: pointer; margin: 5px 5px 15px; display: inline-block;" 
-   onclick="forgotPassword()" id="forgotPassText">
-   نسيت كلمة السر؟
-</p>
-
+    <p style="text-align: left; font-size: 0.75em; color: var(--gold); cursor: pointer; margin: -5px 5px 15px;" 
+       onclick="event.preventDefault(); forgotPassword();" id="forgotPassText">
+       نسيت كلمة السر؟
+    </p>
 
     <button type="button" class="btn-premium" style="width:100%; font-size:1em" onclick="handleAuth()" id="authLoginBtn">دخول للمنصة</button>
 
@@ -824,36 +825,29 @@ async function handleAuth() {
 }
 
 //
-// دالة نسيان كلمة المرورasync function forgotPassword() {
-  const email = document.getElementById('userEmail').value.trim();
+// دالة نسيان كلمة المرور
+async function forgotPassword() {
+  const emailInput = document.getElementById('userEmail');
+  const email = emailInput.value.trim();
 
   if (!email) {
-    showToast(currentLang === 'ar' ? '⚠️ اكتب بريدك أولاً في الخانة المخصصة' : '⚠️ Enter your email first');
+    showToast(currentLang === 'ar' ? '⚠️ يرجى كتابة بريدك أولاً' : '⚠️ Please enter your email first');
     return;
   }
 
-  // تغيير شكل الزر مؤقتاً لإعطاء إيحاء بالتحميل
-  const btn = document.getElementById('forgotPassText');
-  btn.style.opacity = "0.5";
-  btn.innerText = currentLang === 'ar' ? "جاري الإرسال..." : "Sending...";
-
   try {
+    // إرسال طلب إعادة التعيين
     await firebase.auth().sendPasswordResetEmail(email);
     showToast(currentLang === 'ar' ? '📧 أرسلنا رابط الاستعادة لبريدك' : '📧 Reset link sent to your email');
   } catch (error) {
-    console.error("Error:", error.code);
+    console.error(error);
     if (error.code === 'auth/user-not-found') {
-      showToast(currentLang === 'ar' ? '❌ البريد غير موجود' : '❌ User not found');
+      showToast(currentLang === 'ar' ? '❌ هذا الحساب غير موجود' : '❌ User not found');
     } else {
       showToast("❌ " + error.message);
     }
-  } finally {
-    // إعادة شكل الزر لحالته الطبيعية
-    btn.style.opacity = "1";
-    btn.innerText = currentLang === 'ar' ? "نسيت كلمة السر؟" : "Forgot Password?";
   }
 }
-
 
 // دالة تسجيل الدخول بجوجل
 
