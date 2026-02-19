@@ -825,18 +825,25 @@ async function handleAuth() {
 //
 // دالة نسيان كلمة المرور
 async function forgotPassword() {
-  const email = document.getElementById('userEmail').value.trim();
-  if(!email) {
-    showToast(currentLang === 'ar' ? '⚠️ يرجى كتابة بريدك في الخانة أولاً' : '⚠️ Please enter your email first');
+  const emailInput = document.getElementById('userEmail');
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showToast(currentLang === 'ar' ? '⚠️ يرجى كتابة بريدك أولاً' : '⚠️ Please enter your email first');
     return;
   }
-  
+
   try {
-    await auth.sendPasswordResetEmail(email);
+    // إرسال طلب إعادة التعيين
+    await firebase.auth().sendPasswordResetEmail(email);
     showToast(currentLang === 'ar' ? '📧 أرسلنا رابط الاستعادة لبريدك' : '📧 Reset link sent to your email');
-  } catch(e) {
-    console.error(e);
-    showToast("❌ " + e.message);
+  } catch (error) {
+    console.error(error);
+    if (error.code === 'auth/user-not-found') {
+      showToast(currentLang === 'ar' ? '❌ هذا الحساب غير موجود' : '❌ User not found');
+    } else {
+      showToast("❌ " + error.message);
+    }
   }
 }
 
