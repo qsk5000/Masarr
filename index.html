@@ -884,9 +884,14 @@ async function loadUserData(uid) {
 
 async function saveProfile() {
   if(!currentUser) return;
+  
   userProfile.name = document.getElementById('studentName').value;
+  userProfile.level = document.getElementById('studyLevel').value;
+
+  // الحفظ الحقيقي في قاعدة البيانات
   await db.collection('users').doc(currentUser.uid).set(userProfile, { merge: true });
-  showToast("💾 " + (currentLang==='ar'?'تم الحفظ':'Saved'));
+  
+  showToast(currentLang === 'ar' ? '✅ تم حفظ بياناتك في السحاب' : '✅ Profile synced to cloud');
 }
 
 // [تكملة بقية الدوال لديك: addSubject, generateAISchedule, إلخ...]
@@ -1049,29 +1054,44 @@ function renderMembers() {
   `).join('');
 }
 
-function renderChat() {
-  const c = document.getElementById('groupChat');
-  c.innerHTML = mockChat.map(m => `
-    <div class="chat-msg">
-      <div class="chat-avatar">${m.avatar}</div>
-      <div class="chat-bubble">
-        <div class="chat-name">${m.name}</div>
-        ${m.msg}
-      </div>
-    </div>
-  `).join('');
-  c.scrollTop = c.scrollHeight;
+function listenToChat() {
+  // هذه الدالة تراقب التغييرات في قاعدة البيانات وتحدث الشاشة فوراً
+  db.collection('global_chat').orderBy('timestamp', 'asc').limitToLast(20)
+    .onSnapshot(snapshot => {
+      const container = document.getElementById('groupChat');
+      container.innerHTML = ''; // مسح القديم
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        container.innerHTML += `
+          <div class="chat-msg">
+            <div class="chat-avatar">${data.name[0]}</div>
+            <div class="chat-bubble">
+              <div class="chat-name">${data.name}</div>
+              ${data.message}
+            </div>
+          </div>`;
+      });
+      container.scrollTop = container.scrollHeight;
+    });
 }
 
-function sendChat() {
+
+async function sendChat() {
   const inp = document.getElementById('chatInput');
   const msg = inp.value.trim();
-  if(!msg) return;
-  const name = userProfile.name || (currentLang==='ar'?'أنت':'You');
-  mockChat.push({ name, msg, avatar: name[0] });
+  if(!msg || !currentUser) return;
+
+  // إرسال الرسالة لتظهر عند كل الطلاب المشتركين حالياً
+  await db.collection('global_chat').add({
+    name: userProfile.name || "طالب مجهول",
+    message: msg,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    uid: currentUser.uid
+  });
+
   inp.value = '';
-  renderChat();
 }
+
 
 function groupTab(tab) {
   ['myRoom','joinRoom','leaderboard'].forEach(t => {
@@ -1119,23 +1139,24 @@ function renderPublicRooms() {
   `).join('');
 }
 
-function renderLeaderboard() {
-  const leaders = [
-    { rank:1, name:'Ahmad K.', hours:42, streak:14, medal:'🥇' },
-    { rank:2, name:'Sara M.', hours:38, streak:9,  medal:'🥈' },
-    { rank:3, name:'Ali R.',  hours:35, streak:7,  medal:'🥉' },
-    { rank:4, name:userProfile.name||'You', hours:28, streak:5, medal:'4' },
-  ];
-  document.getElementById('leaderboardList').innerHTML = leaders.map(l => `
-    <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)">
-      <span style="font-size:1.3em; width:30px; text-align:center">${l.medal}</span>
-      <div style="flex:1">
-        <strong>${l.name}</strong>
-        <div style="font-size:11px; color:var(--muted)">${l.hours}h · 🔥${l.streak}</div>
-      </div>
-    </div>
-  `).join('');
+async function loadRealLeaderboard() {
+  const snapshot = await db.collection('users').orderBy('arenaWins', 'desc').limit(5).get();
+  let html = '';
+  let rank = 1;
+  snapshot.forEach(doc => {
+    const user = doc.data();
+    html += `
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)">
+        <span style="width:30px;">${rank++}</span>
+        <div style="flex:1">
+          <strong>${user.name || 'مستخدم'}</strong>
+          <div style="font-size:11px; color:var(--muted)">الفوز: ${user.arenaWins || 0} | 🔥 ${user.streak || 0}</div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('leaderboardList').innerHTML = html;
 }
+
 
 // Session Timer
 function toggleSession() {
