@@ -872,27 +872,41 @@ async function loginWithGoogle() {
 // ========================================== 
 
 async function loadUserData(uid) {
-  const doc = await db.collection('users').doc(uid).get();
-  if(doc.exists) {
-    userProfile = { ...userProfile, ...doc.data() };
-    document.getElementById('studentName').value = userProfile.name || '';
-    renderSubjects();
-    if(userProfile.schedule && userProfile.schedule.length > 0) renderSchedule();
-    updateStats();
+  try {
+    const doc = await db.collection('users').doc(uid).get();
+    if(doc.exists) {
+      userProfile = { ...userProfile, ...doc.data() };
+      // تعبئة الحقول بالبيانات المخزنة
+      document.getElementById('studentName').value = userProfile.name || '';
+      document.getElementById('studyLevel').value = userProfile.level || '6';
+      
+      renderSubjects();
+      if(userProfile.schedule && userProfile.schedule.length > 0) renderSchedule();
+      updateStats();
+    } else {
+      console.log("مستخدم جديد، لا توجد بيانات سابقة");
+    }
+  } catch (error) {
+    console.error("خطأ في جلب البيانات:", error);
   }
 }
+
 
 async function saveProfile() {
   if(!currentUser) return;
   
   userProfile.name = document.getElementById('studentName').value;
   userProfile.level = document.getElementById('studyLevel').value;
+  userProfile.peakTime = document.getElementById('peakTime').value;
 
-  // الحفظ الحقيقي في قاعدة البيانات
-  await db.collection('users').doc(currentUser.uid).set(userProfile, { merge: true });
-  
-  showToast(currentLang === 'ar' ? '✅ تم حفظ بياناتك في السحاب' : '✅ Profile synced to cloud');
+  try {
+    await db.collection('users').doc(currentUser.uid).set(userProfile, { merge: true });
+    showToast(currentLang === 'ar' ? '✅ تم المزامنة مع السحاب' : '✅ Synced to cloud');
+  } catch (e) {
+    showToast('❌ فشل الحفظ');
+  }
 }
+
 
 // [تكملة بقية الدوال لديك: addSubject, generateAISchedule, إلخ...]
 
@@ -1054,19 +1068,22 @@ function renderMembers() {
   `).join('');
 }
 
+// استبدل الدالة الموجودة عندك بهذه
 function listenToChat() {
-  // هذه الدالة تراقب التغييرات في قاعدة البيانات وتحدث الشاشة فوراً
-  db.collection('global_chat').orderBy('timestamp', 'asc').limitToLast(20)
+  db.collection('global_chat')
+    .orderBy('timestamp', 'asc')
+    .limitToLast(20)
     .onSnapshot(snapshot => {
       const container = document.getElementById('groupChat');
-      container.innerHTML = ''; // مسح القديم
+      container.innerHTML = ''; 
       snapshot.forEach(doc => {
         const data = doc.data();
+        const isMe = data.uid === currentUser.uid;
         container.innerHTML += `
           <div class="chat-msg">
-            <div class="chat-avatar">${data.name[0]}</div>
+            <div class="chat-avatar" style="background:${isMe?'var(--gold)':'var(--purple)'}">${data.name ? data.name[0] : '?'}</div>
             <div class="chat-bubble">
-              <div class="chat-name">${data.name}</div>
+              <div class="chat-name">${data.name || 'مجهول'}</div>
               ${data.message}
             </div>
           </div>`;
@@ -1075,15 +1092,14 @@ function listenToChat() {
     });
 }
 
-
+// تعديل دالة الإرسال
 async function sendChat() {
   const inp = document.getElementById('chatInput');
   const msg = inp.value.trim();
   if(!msg || !currentUser) return;
 
-  // إرسال الرسالة لتظهر عند كل الطلاب المشتركين حالياً
   await db.collection('global_chat').add({
-    name: userProfile.name || "طالب مجهول",
+    name: userProfile.name || "طالب مسار",
     message: msg,
     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     uid: currentUser.uid
@@ -1091,6 +1107,7 @@ async function sendChat() {
 
   inp.value = '';
 }
+
 
 
 function groupTab(tab) {
@@ -1139,23 +1156,37 @@ function renderPublicRooms() {
   `).join('');
 }
 
-async function loadRealLeaderboard() {
-  const snapshot = await db.collection('users').orderBy('arenaWins', 'desc').limit(5).get();
-  let html = '';
-  let rank = 1;
-  snapshot.forEach(doc => {
-    const user = doc.data();
-    html += `
-      <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)">
-        <span style="width:30px;">${rank++}</span>
-        <div style="flex:1">
-          <strong>${user.name || 'مستخدم'}</strong>
-          <div style="font-size:11px; color:var(--muted)">الفوز: ${user.arenaWins || 0} | 🔥 ${user.streak || 0}</div>
-        </div>
-      </div>`;
-  });
-  document.getElementById('leaderboardList').innerHTML = html;
+async function renderLeaderboard() {
+  try {
+    const snapshot = await db.collection('users')
+      .orderBy('arenaWins', 'desc')
+      .limit(10)
+      .get();
+
+    const list = document.getElementById('leaderboardList');
+    let html = '';
+    let rank = 1;
+
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      html += `
+        <div style="display:flex; align-items:center; gap:12px; padding:12px; border-bottom:1px solid var(--border); background:${doc.id === currentUser.uid ? 'rgba(212,175,55,0.1)' : 'transparent'}">
+          <span style="font-weight:900; color:var(--gold); width:20px">${rank++}</span>
+          <div style="flex:1">
+            <div style="font-weight:bold">${user.name || 'مستخدم مسار'}</div>
+            <div style="font-size:10px; color:var(--muted)">${user.level || ''} | 🔥 ${user.streak || 0} يوم</div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:var(--gold); font-weight:bold">${user.arenaWins || 0} فوز</div>
+          </div>
+        </div>`;
+    });
+    list.innerHTML = html || '<p style="text-align:center; padding:20px">لا يوجد متصدرين بعد</p>';
+  } catch (e) {
+    console.error(e);
+  }
 }
+
 
 
 // Session Timer
