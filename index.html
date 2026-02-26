@@ -1,669 +1,1125 @@
-<!DOCTYPE html><html lang="ar" dir="rtl" data-lang="ar">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Masar V2 | مسار</title>
+<title>Masar V3 | مسار</title>
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;700;900&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;700;900&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
 :root {
-  --gold: #D4AF37; --gold-dark: #AA8A2E; --gold-glow: rgba(212,175,55,0.3);
-  --ink: #0A0C10; --surface: #0F1117; --card: #161B22;
-  --border: rgba(255,255,255,0.08); --text: #E6EDF3; --muted: #8B949E;
-  --teal: #238636; --rose: #DA3633; --purple: #7C3AED; --blue: #1D4ED8;
+  --gold: #D4AF37; --gold-dark: #AA8A2E; --gold-glow: rgba(212,175,55,0.25);
+  --gold-soft: rgba(212,175,55,0.12);
+  --ink: #070810; --surface: #0D1018; --card: #111520;
+  --card2: #161D2A; --border: rgba(255,255,255,0.07);
+  --border-gold: rgba(212,175,55,0.2);
+  --text: #E8EDF5; --muted: #6B7280; --muted2: #9CA3AF;
+  --teal: #10B981; --rose: #EF4444; --purple: #7C3AED; --blue: #3B82F6;
+  --cyan: #06B6D4;
   --font-ar: 'IBM Plex Sans Arabic', sans-serif;
-  --font-en: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Noto Kufi Arabic', sans-serif;
   --font-mono: 'Space Mono', monospace;
+  --font-syne: 'Syne', sans-serif;
+  --r-sm: 12px; --r-md: 16px; --r-lg: 24px; --r-xl: 32px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-gold: 0 0 30px rgba(212,175,55,0.15);
 }
+
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html[data-lang="en"] { direction: ltr; }
-html[data-lang="ar"] { direction: rtl; }
-html[data-lang="en"] body { font-family: var(--font-en); }
-html[data-lang="ar"] body { font-family: var(--font-ar); }
-
-body { background:var(--ink); color:var(--text); line-height:1.6; overflow-x:hidden; }
-body::before { content:''; position:fixed; inset:0; background:radial-gradient(circle at 50% -20%, #1e2631 0%, var(--ink) 70%); z-index:-1; }
-
-/* Lang switcher */
-#langBar {
-  position:fixed; top:15px; right:15px; z-index:9999;
-  display:flex; gap:6px; background:rgba(22,27,34,0.95); 
-  border:1px solid var(--border); border-radius:20px; padding:5px 8px;
-  backdrop-filter:blur(10px);
+  html[data-lang="en"] { direction:ltr; }
+  html[data-lang="ar"] { direction:rtl; }
+  html[data-lang="en"] body { font-family:'IBM Plex Sans Arabic',sans-serif; }
+  html[data-lang="ar"] body { font-family:var(--font-ar); }
+body {
+background:var(--ink); color:var(--text); line-height:1.6;
+overflow-x:hidden; min-height:100vh;
 }
-html[data-lang="en"] #langBar { left:15px; right:auto; }
+
+/* ── ANIMATED BG ── */
+body::before {
+content:''; position:fixed; inset:0; z-index:-2;
+background:
+radial-gradient(ellipse 80% 60% at 20% -10%, rgba(212,175,55,0.06) 0%, transparent 60%),
+radial-gradient(ellipse 60% 50% at 80% 110%, rgba(124,58,237,0.05) 0%, transparent 60%),
+var(--ink);
+pointer-events:none;
+}
+body::after {
+content:''; position:fixed; inset:0; z-index:-1;
+background-image:
+linear-gradient(rgba(212,175,55,0.015) 1px, transparent 1px),
+linear-gradient(90deg, rgba(212,175,55,0.015) 1px, transparent 1px);
+background-size:40px 40px;
+mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+pointer-events:none;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(212,175,55,0.3); border-radius:2px; }
+
+/* ── LANG BAR ── */
+#langBar {
+position:fixed; top:16px; inset-inline-end:16px; z-index:10002;
+display:flex; gap:4px; background:rgba(17,21,32,0.9);
+border:1px solid var(--border); border-radius:20px; padding:4px;
+backdrop-filter:blur(20px);
+}
 .lang-btn {
-  padding:4px 12px; border-radius:14px; font-size:11px; font-weight:700;
-  cursor:pointer; border:none; background:transparent; color:var(--muted); transition:0.2s;
+padding:5px 14px; border-radius:16px; font-size:11px; font-weight:700;
+cursor:pointer; border:none; background:transparent; color:var(--muted); transition:0.2s;
 }
 .lang-btn.active { background:var(--gold); color:var(--ink); }
 
-/* Cards */
-.glass-card {
-  background:var(--card); border:1px solid var(--border); border-radius:20px;
-  padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.2);
-  transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275), border-color 0.3s;
-}
-.glass-card:hover { transform:translateY(-4px); border-color:var(--gold); }
-
-/* Bottom Nav */
-#bottomNav {
-  position:fixed; bottom:20px; left:20px; right:20px; height:65px;
-  background:rgba(22,27,34,0.95); backdrop-filter:blur(15px);
-  border:1px solid var(--border); border-radius:25px;
-  display:flex; justify-content:space-around; align-items:center;
-  z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5);
-}
-.nav-item {
-  position:relative; color:var(--muted); cursor:pointer; transition:all 0.3s;
-  display:flex; flex-direction:column; align-items:center;
-}
-.nav-item.active { color:var(--gold); transform:translateY(-5px); }
-.nav-item i { font-size:24px; }
-.nav-item span { font-size:10px; font-weight:600; margin-top:2px; }
-
-/* Pages */
-@keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-.page { display:none; padding:20px 20px 100px; animation:slideUp 0.4s ease forwards; }
-.page.active { display:block; }
-
-/* Auth Overlay */
+/* ── AUTH OVERLAY ── */
 #authOverlay {
-  position:fixed; inset:0; background:var(--ink); z-index:10001;
-  display:flex; align-items:center; justify-content:center;
+position:fixed; inset:0; z-index:10001;
+display:flex; align-items:center; justify-content:center;
+background:var(--ink);
+overflow-y:auto;
+min-height:100vh;
+min-width:100vw;
+top:0; left:0; right:0; bottom:0;
+}
+#authOverlay::before {
+content:''; position:fixed; inset:0;
+background:radial-gradient(ellipse 100% 80% at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 60%);
+pointer-events:none; z-index:0;
+}
+.auth-wrap {
+position:relative; z-index:2; width:90%; max-width:440px;
+padding:20px 0; margin:auto;
+}
+.auth-logo-area { text-align:center; margin-bottom:36px; }
+.auth-logo-main {
+font-family:var(--font-display); font-size:3.2em; font-weight:900;
+background:linear-gradient(135deg, #D4AF37 0%, #F3D16E 50%, #AA8A2E 100%);
+-webkit-background-clip:text; -webkit-text-fill-color:transparent;
+display:inline-block; letter-spacing:4px;
+}
+.auth-logo-sub {
+display:block; font-size:0.85em; color:var(--muted); margin-top:4px;
+letter-spacing:2px; text-transform:uppercase; font-weight:400;
 }
 .auth-card {
-  width:90%; max-width:420px; text-align:center;
-  background:var(--card); border:1px solid var(--border); border-radius:24px; padding:35px 30px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+background:var(--card); border:1px solid var(--border);
+border-radius:var(--r-xl); padding:32px 28px;
+box-shadow:0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.05);
 }
-.auth-logo { font-size:3em; margin-bottom:5px; }
-html[data-lang="ar"] .auth-logo { font-family:'Noto Kufi Arabic'; }
-html[data-lang="en"] .auth-logo { font-family:var(--font-en); font-weight:800; }
-
+.auth-tabs {
+display:flex; gap:0; margin-bottom:28px;
+background:rgba(255,255,255,0.04); border-radius:12px; padding:4px;
+}
+.auth-tab-btn {
+flex:1; padding:9px; border-radius:9px; font-size:13px; font-weight:700;
+cursor:pointer; border:none; background:transparent; color:var(--muted); transition:0.25s;
+font-family:var(--font-ar);
+}
+.auth-tab-btn.active { background:var(--gold); color:var(--ink); }
+.auth-field { margin-bottom:14px; position:relative; }
+.auth-field-icon {
+position:absolute; top:50%; transform:translateY(-50%);
+inset-inline-start:14px; color:var(--muted); font-size:16px; pointer-events:none;
+}
 .auth-input {
-  width:100%; padding:14px 16px; border-radius:12px;
-  border:1px solid var(--border); background:#1c2128; color:white;
-  font-size:0.95em; margin-bottom:10px; outline:none; transition:border 0.2s;
+width:100%; padding:13px 14px 13px 42px; border-radius:12px;
+border:1px solid var(--border); background:rgba(255,255,255,0.03); color:white;
+font-size:0.95em; outline:none; transition:border 0.2s, box-shadow 0.2s;
+font-family:var(--font-ar);
 }
-html[data-lang="ar"] .auth-input { font-family:var(--font-ar); text-align:right; }
-html[data-lang="en"] .auth-input { font-family:var(--font-en); text-align:left; }
-.auth-input:focus { border-color:var(--gold); }
+html[data-lang="ar"] .auth-input { padding:13px 42px 13px 14px; }
+.auth-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,175,55,0.1); }
+.auth-input::placeholder { color:var(--muted); }
+.btn-auth {
+width:100%; padding:14px; border-radius:13px; border:none;
+background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+color:var(--ink); font-size:1em; font-weight:900; cursor:pointer;
+font-family:var(--font-ar); transition:0.25s;
+box-shadow:0 4px 20px rgba(212,175,55,0.3);
+margin-bottom:10px;
+}
+.btn-auth:active { transform:scale(0.98); }
+.btn-google {
+width:100%; padding:12px; border-radius:13px; border:1px solid var(--border);
+background:rgba(255,255,255,0.04); color:var(--text); font-size:0.9em;
+font-weight:600; cursor:pointer; font-family:var(--font-ar);
+display:flex; align-items:center; justify-content:center; gap:10px;
+transition:0.2s;
+}
+.btn-google:hover { background:rgba(255,255,255,0.07); }
+.auth-forgot {
+text-align:center; font-size:0.8em; color:var(--gold); cursor:pointer;
+margin:10px 0 16px; opacity:0.8; transition:0.2s;
+}
+.auth-forgot:hover { opacity:1; }
 
-/* Badges & Buttons */
-.mizan-badge {
-  background:linear-gradient(45deg, var(--gold), #f3d16e);
-  color:var(--ink); padding:2px 8px; border-radius:5px;
-  font-size:10px; font-weight:900; vertical-align:middle;
+/* ── BOTTOM NAV ── */
+#bottomNav {
+position:fixed; bottom:16px; left:12px; right:12px; height:68px;
+background:rgba(13,16,24,0.95); backdrop-filter:blur(24px);
+border:1px solid var(--border-gold); border-radius:28px;
+display:flex; justify-content:space-around; align-items:center;
+z-index:1000; box-shadow:0 -4px 30px rgba(0,0,0,0.5), var(--shadow-gold);
 }
-.btn-premium {
-  background:linear-gradient(45deg, var(--gold), var(--gold-dark));
-  color:var(--ink); border:none; padding:13px 25px;
-  border-radius:14px; font-weight:900; cursor:pointer;
-  box-shadow:0 4px 15px var(--gold-glow); transition:0.3s;
-  font-size:0.95em;
+.nav-item {
+position:relative; color:var(--muted); cursor:pointer;
+display:flex; flex-direction:column; align-items:center; gap:2px;
+padding:8px 14px; border-radius:16px; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
-html[data-lang="ar"] .btn-premium { font-family:var(--font-ar); }
-html[data-lang="en"] .btn-premium { font-family:var(--font-en); }
-.btn-premium:active { transform:scale(0.95); }
-.btn-green { background:linear-gradient(45deg,#238636,#1a6326); color:white; }
-.btn-purple { background:linear-gradient(45deg,#7C3AED,#5B21B6); color:white; box-shadow:0 4px 15px rgba(124,58,237,0.3); }
+.nav-item.active {
+color:var(--gold);
+background:rgba(212,175,55,0.1);
+transform:translateY(-4px);
+}
+.nav-item i { font-size:22px; }
+.nav-item span { font-size:9px; font-weight:700; letter-spacing:0.5px; }
+.notif-dot {
+position:absolute; top:6px; inset-inline-end:10px;
+width:7px; height:7px; background:var(--rose); border-radius:50%;
+border:2px solid var(--ink); animation:pulse-dot 2s infinite;
+}
+@keyframes pulse-dot { 0%,100%{transform:scale(1);} 50%{transform:scale(1.3);} }
 
-/* Inputs universal */
+/* ── PAGES ── */
+@keyframes pageIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+.page { display:none; padding:16px 16px 100px; max-width:900px; margin:0 auto; }
+.page.active { display:block; animation:pageIn 0.35s ease forwards; }
+
+/* ── CARDS ── */
+.card {
+background:var(--card); border:1px solid var(--border);
+border-radius:var(--r-lg); padding:20px;
+box-shadow:var(--shadow); transition:border-color 0.3s, transform 0.3s;
+}
+.card:hover { border-color:var(--border-gold); }
+.card-glow {
+background:linear-gradient(135deg, var(--card) 0%, rgba(212,175,55,0.04) 100%);
+border-color:var(--border-gold);
+box-shadow:var(--shadow), var(--shadow-gold);
+}
+.card-glass {
+background:rgba(17,21,32,0.7); backdrop-filter:blur(16px);
+border:1px solid var(--border);
+}
+
+/* ── HERO CARD ── */
+.hero-card {
+background:linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(17,21,32,1) 60%);
+border:1px solid var(--border-gold); border-radius:var(--r-xl);
+padding:28px; margin-bottom:20px;
+position:relative; overflow:hidden;
+}
+.hero-card::before {
+content:''; position:absolute; top:-40px; inset-inline-end:-40px;
+width:200px; height:200px; border-radius:50%;
+background:radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+pointer-events:none;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+display:flex; align-items:center; gap:14px; margin-bottom:24px;
+}
+.page-header-icon {
+width:46px; height:46px; border-radius:14px;
+background:var(--gold-soft); border:1px solid var(--border-gold);
+display:flex; align-items:center; justify-content:center;
+font-size:20px; color:var(--gold); flex-shrink:0;
+}
+.page-title {
+font-family:var(--font-display); font-size:1.3em; font-weight:900;
+line-height:1.2;
+}
+.page-subtitle { font-size:0.82em; color:var(--muted); margin-top:2px; }
+
+/* ── SECTION HEADER ── */
+.sec-header {
+display:flex; align-items:center; justify-content:space-between;
+margin-bottom:14px;
+}
+.sec-title { font-family:var(--font-display); font-size:1em; font-weight:700; }
+.sec-action { font-size:12px; color:var(--gold); cursor:pointer; }
+
+/* ── BADGES ── */
+.badge {
+display:inline-flex; align-items:center; gap:4px;
+padding:3px 9px; border-radius:8px; font-size:10px; font-weight:800;
+}
+.badge-gold { background:linear-gradient(45deg,#D4AF37,#F3D16E); color:var(--ink); }
+.badge-purple { background:rgba(124,58,237,0.2); color:#A78BFA; border:1px solid rgba(124,58,237,0.3); }
+.badge-teal { background:rgba(16,185,129,0.15); color:#34D399; border:1px solid rgba(16,185,129,0.25); }
+.badge-rose { background:rgba(239,68,68,0.15); color:#FCA5A5; border:1px solid rgba(239,68,68,0.25); }
+.badge-live { background:rgba(239,68,68,0.15); color:#FCA5A5; animation:live-pulse 2s infinite; }
+@keyframes live-pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+
+/* ── BUTTONS ── */
+.btn {
+display:inline-flex; align-items:center; justify-content:center;
+gap:8px; padding:12px 22px; border-radius:13px; border:none;
+font-weight:800; cursor:pointer; transition:all 0.25s; font-size:0.9em;
+font-family:var(--font-ar);
+}
+.btn:active { transform:scale(0.96); }
+.btn-primary {
+background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+color:var(--ink); box-shadow:0 4px 16px rgba(212,175,55,0.3);
+}
+.btn-primary:hover { box-shadow:0 6px 24px rgba(212,175,55,0.45); transform:translateY(-1px); }
+.btn-secondary {
+background:rgba(255,255,255,0.06); color:var(--text);
+border:1px solid var(--border);
+}
+.btn-secondary:hover { background:rgba(255,255,255,0.09); }
+.btn-danger { background:rgba(239,68,68,0.15); color:#FCA5A5; border:1px solid rgba(239,68,68,0.2); }
+.btn-purple-solid { background:linear-gradient(135deg,#7C3AED,#5B21B6); color:white; box-shadow:0 4px 16px rgba(124,58,237,0.3); }
+.btn-teal-solid { background:linear-gradient(135deg,#10B981,#059669); color:white; box-shadow:0 4px 16px rgba(16,185,129,0.3); }
+.btn-w100 { width:100%; }
+.btn-sm { padding:8px 16px; font-size:0.82em; border-radius:10px; }
+.btn-icon { width:40px; height:40px; padding:0; border-radius:11px; }
+
+/* ── INPUTS ── */
+.field { margin-bottom:16px; }
+.field-label { display:block; font-size:0.82em; font-weight:600; color:var(--muted2); margin-bottom:6px; }
 .field-input {
-  width:100%; padding:12px 14px; border-radius:11px; background:#0A0C10;
-  border:1px solid var(--border); color:white; outline:none; transition:border 0.2s;
+width:100%; padding:12px 14px; border-radius:11px;
+border:1px solid var(--border); background:rgba(255,255,255,0.03);
+color:white; outline:none; transition:border 0.2s, box-shadow 0.2s;
+font-family:var(--font-ar); font-size:0.9em;
 }
-html[data-lang="ar"] .field-input { font-family:var(--font-ar); text-align:right; }
-html[data-lang="en"] .field-input { font-family:var(--font-en); text-align:left; }
-.field-input:focus { border-color:var(--gold); }
-.field-label { display:block; margin-bottom:6px; font-size:0.85em; color:var(--muted); }
+html[data-lang="ar"] .field-input { text-align:right; }
+html[data-lang="en"] .field-input { text-align:left; }
+.field-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,175,55,0.08); }
+.field-input::placeholder { color:var(--muted); }
+select.field-input { cursor:pointer; }
 
-/* Task items */
-.task-item {
-  display:flex; align-items:center; gap:12px; padding:13px;
-  background:rgba(255,255,255,0.03); border-radius:13px;
-  border-inline-end:4px solid var(--gold); margin-bottom:10px;
-}
-.task-time { font-family:var(--font-mono); color:var(--gold); font-weight:bold; font-size:0.85em; white-space:nowrap; }
+/* ── GRID LAYOUTS ── */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+@media(max-width:480px) { .grid-4 { grid-template-columns:repeat(2,1fr); } }
 
-/* Toast */
-#toast {
-  position:fixed; top:20px; left:50%; transform:translateX(-50%);
-  background:var(--gold); color:var(--ink); padding:12px 25px;
-  border-radius:12px; font-weight:bold; z-index:9999;
-  opacity:0; pointer-events:none; transition:0.3s; white-space:nowrap;
+/* ── STAT CARD ── */
+.stat-card {
+background:var(--card); border:1px solid var(--border); border-radius:var(--r-md);
+padding:16px 14px; text-align:center;
+transition:border-color 0.3s, transform 0.3s;
 }
-#toast.show { opacity:1; top:40px; }
+.stat-card:hover { border-color:var(--border-gold); transform:translateY(-2px); }
+.stat-num {
+font-family:var(--font-mono); font-size:1.9em; font-weight:700;
+color:var(--gold); line-height:1; margin-bottom:4px;
+}
+.stat-lbl { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:0.5px; }
 
-/* Schedule grid */
-.schedule-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:15px; }
-
-/* ============================================================
-   GROUP STUDY SYSTEM
-   ============================================================ */
-.group-room {
-  border:1px solid var(--border); border-radius:16px;
-  padding:18px; margin-bottom:14px; background:rgba(255,255,255,0.02);
-  transition:border-color 0.3s, transform 0.3s;
-}
-.group-room:hover { border-color:var(--purple); transform:translateY(-3px); }
-.group-room-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.group-tag {
-  font-size:10px; font-weight:700; padding:3px 9px; border-radius:8px;
-  background:rgba(124,58,237,0.2); color:#a78bfa; border:1px solid rgba(124,58,237,0.3);
-}
-.members-row { display:flex; flex-wrap:wrap; gap:7px; margin:10px 0; }
-.member-chip {
-  display:flex; align-items:center; gap:5px; padding:4px 10px;
-  background:rgba(255,255,255,0.05); border-radius:20px; font-size:12px;
-}
-.member-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; flex-shrink:0; }
-.member-dot.away { background:#f59e0b; }
-.member-dot.offline { background:var(--muted); }
-.session-timer {
-  font-family:var(--font-mono); font-size:1.6em; color:var(--gold);
-  text-align:center; padding:12px; background:rgba(212,175,55,0.05);
-  border-radius:12px; border:1px solid rgba(212,175,55,0.15); margin:12px 0;
-  letter-spacing:3px;
-}
-.focus-mode-bar {
-  display:flex; align-items:center; gap:8px; padding:10px 14px;
-  background:rgba(124,58,237,0.1); border-radius:11px;
-  border:1px solid rgba(124,58,237,0.2); margin-top:10px; cursor:pointer;
-}
-.focus-mode-bar i { color:#a78bfa; }
-
-/* Live chat in group room */
-.group-chat { max-height:180px; overflow-y:auto; margin:10px 0; padding:0 2px; }
-.group-chat::-webkit-scrollbar { width:3px; }
-.group-chat::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-.chat-msg {
-  display:flex; gap:8px; margin-bottom:8px; align-items:flex-start;
-}
-html[data-lang="en"] .chat-msg { flex-direction:row; }
-html[data-lang="ar"] .chat-msg { flex-direction:row-reverse; }
-.chat-avatar {
-  width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  background:linear-gradient(45deg, var(--purple), var(--gold));
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:700; color:white;
-}
-.chat-bubble {
-  background:rgba(255,255,255,0.05); border-radius:10px; padding:7px 11px;
-  font-size:0.82em; max-width:80%;
-}
-html[data-lang="ar"] .chat-bubble { border-radius:10px 2px 10px 10px; text-align:right; }
-html[data-lang="en"] .chat-bubble { border-radius:2px 10px 10px 10px; text-align:left; }
-.chat-name { font-size:10px; color:var(--muted); margin-bottom:2px; }
-
-.chat-input-row { display:flex; gap:8px; margin-top:10px; }
-.chat-input-row input { flex:1; padding:9px 13px; border-radius:10px; border:1px solid var(--border); background:#0A0C10; color:white; font-size:0.85em; }
-html[data-lang="ar"] .chat-input-row input { text-align:right; font-family:var(--font-ar); }
-html[data-lang="en"] .chat-input-row input { text-align:left; font-family:var(--font-en); }
-.chat-input-row button { width:38px; height:38px; border-radius:10px; border:none; background:var(--purple); color:white; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; }
-
-/* Pomodoro widget */
-.pomodoro-ring {
-  position:relative; width:100px; height:100px; margin:0 auto;
-}
-.pomodoro-ring svg { transform:rotate(-90deg); }
-.pomodoro-ring circle { fill:none; stroke-width:6; }
-.ring-bg { stroke:rgba(255,255,255,0.07); }
-.ring-progress { stroke:var(--gold); stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
-.ring-text {
-  position:absolute; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-}
-.ring-text span { font-family:var(--font-mono); font-size:1.05em; font-weight:700; }
-.ring-text small { font-size:9px; color:var(--muted); }
-
-/* Streak counter */
-.streak-flame { font-size:2em; }
-@keyframes flicker { 0%,100%{transform:scale(1) rotate(-2deg);} 50%{transform:scale(1.1) rotate(2deg);} }
-.streak-flame { animation:flicker 1.5s ease-in-out infinite; display:inline-block; }
-
-/* Stats cards */
-.stat-mini {
-  text-align:center; padding:16px 12px;
-  background:rgba(255,255,255,0.02); border-radius:14px;
-  border:1px solid var(--border);
-}
-.stat-mini .num { font-size:1.8em; font-weight:900; font-family:var(--font-mono); color:var(--gold); }
-.stat-mini .lbl { font-size:11px; color:var(--muted); margin-top:4px; }
-
-/* Progress bar */
+/* ── PROGRESS ── */
+.prog-wrap { margin-top:8px; }
+.prog-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:6px; }
 .prog-bar { background:rgba(255,255,255,0.06); border-radius:99px; height:6px; overflow:hidden; }
-.prog-fill { height:100%; border-radius:99px; background:linear-gradient(90deg, var(--gold), #f3d16e); transition:width 0.8s ease; }
-
-/* Section header */
-.section-header {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:18px;
+.prog-fill {
+height:100%; border-radius:99px;
+background:linear-gradient(90deg, var(--gold-dark), var(--gold), #F3D16E);
+transition:width 0.9s cubic-bezier(0.34,1.56,0.64,1);
+position:relative;
 }
-.section-title { font-size:1.1em; font-weight:700; }
-html[data-lang="ar"] .section-title { font-family:'Noto Kufi Arabic'; }
+.prog-fill::after {
+content:''; position:absolute; right:0; top:50%; transform:translateY(-50%);
+width:10px; height:10px; background:white; border-radius:50%;
+box-shadow:0 0 6px rgba(212,175,55,0.8);
+}
 
-/* Tabs */
-.tabs { display:flex; gap:8px; margin-bottom:20px; overflow-x:auto; padding-bottom:4px; }
+/* ── TASK ITEM ── */
+.task-item {
+display:flex; align-items:center; gap:12px; padding:14px 16px;
+background:rgba(255,255,255,0.025); border-radius:var(--r-sm);
+border:1px solid var(--border);
+border-inline-start:3px solid var(--gold);
+margin-bottom:8px; transition:all 0.25s; cursor:default;
+}
+.task-item.done { opacity:0.45; border-inline-start-color:var(--teal); }
+.task-time {
+font-family:var(--font-mono); color:var(--gold); font-size:0.8em;
+font-weight:700; white-space:nowrap; min-width:45px;
+}
+.task-info { flex:1; min-width:0; }
+.task-subj { font-weight:700; font-size:0.9em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.task-type { font-size:0.72em; color:var(--muted); margin-top:1px; }
+.task-done-btn {
+width:28px; height:28px; border-radius:8px; border:2px solid var(--border);
+background:transparent; cursor:pointer; display:flex; align-items:center;
+justify-content:center; transition:0.2s; flex-shrink:0; color:var(--muted);
+font-size:14px;
+}
+.task-item.done .task-done-btn { background:var(--teal); border-color:var(--teal); color:white; }
+
+/* ── STREAK ── */
+.streak-container { display:flex; align-items:center; gap:12px; }
+.streak-badge {
+background:linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+border:1px solid var(--border-gold); border-radius:var(--r-md);
+padding:12px 16px; text-align:center;
+}
+.streak-fire { font-size:1.8em; animation:flicker 1.5s ease-in-out infinite; display:block; }
+@keyframes flicker { 0%,100%{transform:scale(1) rotate(-2deg);} 50%{transform:scale(1.08) rotate(2deg);} }
+.streak-num { font-family:var(--font-mono); font-size:1.5em; font-weight:700; color:var(--gold); display:block; }
+.streak-lbl { font-size:9px; color:var(--muted); }
+
+/* ── TABS ── */
+.tabs {
+display:flex; gap:6px; margin-bottom:20px;
+overflow-x:auto; padding-bottom:4px; scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar { display:none; }
 .tab-btn {
-  padding:7px 16px; border-radius:20px; font-size:12px; font-weight:700;
-  cursor:pointer; border:1px solid var(--border); background:transparent;
-  color:var(--muted); white-space:nowrap; transition:0.2s;
+padding:8px 18px; border-radius:20px; font-size:12px; font-weight:800;
+cursor:pointer; border:1px solid var(--border); background:transparent;
+color:var(--muted); white-space:nowrap; transition:0.2s; font-family:var(--font-ar);
 }
 .tab-btn.active { background:var(--gold); color:var(--ink); border-color:var(--gold); }
 
-/* Invite code */
-.invite-code {
-  font-family:var(--font-mono); font-size:1.4em; font-weight:700;
-  color:var(--gold); letter-spacing:5px; text-align:center;
-  padding:14px; background:rgba(212,175,55,0.05);
-  border:1px dashed rgba(212,175,55,0.3); border-radius:12px; cursor:pointer;
+/* ── GROUP ROOM ── */
+.member-chip {
+display:flex; align-items:center; gap:6px; padding:6px 12px;
+background:rgba(255,255,255,0.04); border:1px solid var(--border);
+border-radius:20px; font-size:12px; transition:border-color 0.2s;
 }
+.member-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.member-dot.online { background:var(--teal); box-shadow:0 0 6px rgba(16,185,129,0.6); }
+.member-dot.away { background:#F59E0B; }
+.member-dot.offline { background:var(--muted); }
 
-/* Notification dot */
-.notif-dot {
-  position:absolute; top:-2px; right:-2px;
-  width:8px; height:8px; background:var(--rose); border-radius:50%;
-  border:2px solid var(--ink);
+/* ── SESSION TIMER ── */
+.session-timer-display {
+font-family:var(--font-mono); font-size:2.8em; font-weight:700;
+color:var(--gold); text-align:center; padding:20px;
+letter-spacing:6px; line-height:1;
+text-shadow:0 0 30px rgba(212,175,55,0.4);
 }
-html[data-lang="en"] .notif-dot { left:-2px; right:auto; }
+.session-timer-display.running { color:#F3D16E; }
 
-/* Arena styles */
-.arena-vs {
-  display:grid; grid-template-columns:1fr auto 1fr; gap:15px; align-items:center; margin-bottom:20px;
+/* ── POMODORO RING ── */
+.pom-container { display:flex; flex-direction:column; align-items:center; padding:10px 0; }
+.pom-ring { position:relative; width:110px; height:110px; }
+.pom-ring svg { transform:rotate(-90deg); overflow:visible; }
+.pom-bg { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:7; }
+.pom-track { fill:none; stroke:rgba(212,175,55,0.15); stroke-width:7; }
+.pom-prog { fill:none; stroke-width:7; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
+.pom-focus-prog { stroke:var(--gold); filter:drop-shadow(0 0 6px rgba(212,175,55,0.5)); }
+.pom-break-prog { stroke:var(--teal); filter:drop-shadow(0 0 6px rgba(16,185,129,0.5)); }
+.pom-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.pom-time { font-family:var(--font-mono); font-size:1.15em; font-weight:700; }
+.pom-phase { font-size:9px; color:var(--muted); margin-top:2px; }
+
+/* ── CHAT ── */
+.chat-container { max-height:200px; overflow-y:auto; padding:4px 0; }
+.chat-msg { display:flex; gap:8px; margin-bottom:10px; }
+html[data-lang="ar"] .chat-msg { flex-direction:row-reverse; }
+.chat-avatar {
+width:30px; height:30px; border-radius:10px; flex-shrink:0;
+background:linear-gradient(135deg, var(--purple), var(--gold));
+display:flex; align-items:center; justify-content:center;
+font-size:12px; font-weight:800; color:white;
 }
-.arena-player { text-align:center; padding:15px; background:rgba(255,255,255,0.03); border-radius:14px; }
+.chat-bubble {
+background:rgba(255,255,255,0.05); border-radius:12px; padding:8px 12px;
+font-size:0.83em; max-width:78%; border:1px solid var(--border);
+}
+html[data-lang="ar"] .chat-bubble { border-radius:12px 2px 12px 12px; }
+html[data-lang="en"] .chat-bubble { border-radius:2px 12px 12px 12px; }
+.chat-name { font-size:10px; color:var(--muted); margin-bottom:3px; font-weight:700; }
+.chat-input-row { display:flex; gap:8px; margin-top:12px; }
+.chat-input {
+flex:1; padding:10px 14px; border-radius:11px; border:1px solid var(--border);
+background:rgba(255,255,255,0.04); color:white; font-size:0.85em;
+font-family:var(--font-ar); outline:none; transition:border 0.2s;
+}
+html[data-lang="ar"] .chat-input { text-align:right; }
+html[data-lang="en"] .chat-input { text-align:left; }
+.chat-input:focus { border-color:var(--gold); }
+.chat-send-btn {
+width:40px; height:40px; border-radius:11px; border:none;
+background:var(--purple); color:white; cursor:pointer; font-size:18px;
+display:flex; align-items:center; justify-content:center; transition:0.2s;
+flex-shrink:0;
+}
+.chat-send-btn:hover { background:#6D28D9; }
+.chat-disabled { opacity:0.4; pointer-events:none; }
+
+/* ── INVITE CODE ── */
+.invite-code-box {
+font-family:var(--font-mono); font-size:1.5em; font-weight:700;
+color:var(--gold); letter-spacing:6px; text-align:center;
+padding:16px; cursor:pointer; border-radius:14px;
+background:linear-gradient(135deg, rgba(212,175,55,0.07) 0%, rgba(212,175,55,0.03) 100%);
+border:1px dashed rgba(212,175,55,0.4); transition:0.2s;
+}
+.invite-code-box:hover { background:rgba(212,175,55,0.1); }
+
+/* ── FOCUS MODE TOGGLE ── */
+.focus-toggle-row {
+display:flex; align-items:center; gap:12px; padding:12px 16px;
+background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.2);
+border-radius:var(--r-sm); cursor:pointer; transition:0.2s;
+}
+.focus-toggle-row:hover { background:rgba(124,58,237,0.12); }
+.toggle-switch {
+width:40px; height:22px; background:rgba(255,255,255,0.1); border-radius:11px;
+position:relative; transition:0.3s; flex-shrink:0;
+}
+.toggle-switch.on { background:rgba(212,175,55,0.25); }
+.toggle-ball {
+position:absolute; width:18px; height:18px; background:var(--muted);
+border-radius:50%; top:2px; inset-inline-end:2px; transition:0.3s;
+}
+.toggle-switch.on .toggle-ball { background:var(--gold); inset-inline-end:auto; inset-inline-start:2px; }
+
+/* ── ARENA ── */
+.arena-header {
+display:grid; grid-template-columns:1fr auto 1fr; gap:12px;
+align-items:center; margin-bottom:20px;
+}
+.arena-player-card {
+text-align:center; padding:16px 12px;
+background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r-md);
+}
+.arena-avatar { font-size:1.8em; margin-bottom:6px; }
+.arena-name { font-size:0.85em; font-weight:700; margin-bottom:4px; }
+.arena-score { font-family:var(--font-mono); font-size:2em; font-weight:700; }
 .arena-vs-badge {
-  font-family:var(--font-mono); font-size:1.3em; font-weight:700;
-  color:var(--rose); background:rgba(218,54,51,0.1); border-radius:12px;
-  padding:10px 8px; border:1px solid rgba(218,54,51,0.2);
+font-family:var(--font-mono); font-size:1.2em; font-weight:700;
+color:var(--rose); background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);
+border-radius:12px; padding:10px 8px; text-align:center;
 }
-.q-option {
-  padding:13px 16px; border-radius:12px; border:1px solid var(--border);
-  cursor:pointer; margin-bottom:8px; transition:0.2s;
-  background:rgba(255,255,255,0.02);
+.q-card { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r-md); padding:18px; }
+.q-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.q-num-badge { font-size:11px; color:var(--muted); font-weight:700; }
+.q-timer-badge {
+font-family:var(--font-mono); font-size:14px; font-weight:700;
+color:var(--gold); background:rgba(212,175,55,0.1); border-radius:8px; padding:4px 10px;
 }
-.q-option:hover { border-color:var(--gold); background:rgba(212,175,55,0.05); }
-.q-option.correct { border-color:var(--teal); background:rgba(35,134,54,0.1); }
-.q-option.wrong { border-color:var(--rose); background:rgba(218,54,51,0.1); }
-</style></head>
-<body><!-- Language Switcher --><div id="langBar">
+.q-timer-badge.urgent { color:var(--rose); background:rgba(239,68,68,0.1); animation:pulse-dot 0.5s infinite; }
+.q-text { font-size:1.05em; font-weight:600; line-height:1.6; margin-bottom:16px; }
+.q-opt { padding:13px 16px; border-radius:11px; border:1px solid var(--border);
+cursor:pointer; margin-bottom:8px; transition:0.2s;
+background:rgba(255,255,255,0.025); font-size:0.9em;
+}
+.q-opt:hover { border-color:var(--gold); background:rgba(212,175,55,0.06); }
+.q-opt.correct { border-color:var(--teal); background:rgba(16,185,129,0.12); }
+.q-opt.wrong { border-color:var(--rose); background:rgba(239,68,68,0.1); }
+.arena-input-group {
+display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;
+}
+
+/* ── MIZAN ── */
+.mizan-radar { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.mizan-stat {
+background:var(--card); border:1px solid var(--border); border-radius:var(--r-md);
+padding:18px 14px; text-align:center; transition:border-color 0.3s;
+}
+.mizan-stat:hover { border-color:var(--border-gold); }
+.mizan-icon { font-size:1.6em; margin-bottom:8px; display:block; }
+.mizan-val { font-family:var(--font-mono); font-size:2em; font-weight:700; color:var(--gold); display:block; }
+.mizan-lbl { font-size:11px; color:var(--muted); font-weight:600; }
+.guardian-card {
+background:linear-gradient(135deg, rgba(124,58,237,0.08), rgba(17,21,32,1));
+border:1px solid rgba(124,58,237,0.2); border-radius:var(--r-lg); padding:20px;
+margin-bottom:16px;
+}
+
+/* ── TOAST ── */
+#toast {
+position:fixed; top:24px; left:50%; transform:translateX(-50%) translateY(-20px);
+background:var(--card2); color:var(--text); padding:12px 22px;
+border-radius:14px; font-weight:700; z-index:99999; font-size:0.9em;
+border:1px solid var(--border-gold); box-shadow:var(--shadow), var(--shadow-gold);
+opacity:0; pointer-events:none; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+white-space:nowrap; max-width:90vw;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align:center; padding:40px 20px; color:var(--muted); }
+.empty-state-icon { font-size:3em; margin-bottom:12px; opacity:0.5; }
+.empty-state-text { font-size:0.9em; }
+
+/* ── LOADING ── */
+.loading-spin {
+width:36px; height:36px; border-radius:50%;
+border:3px solid rgba(212,175,55,0.15); border-top-color:var(--gold);
+animation:spin 0.8s linear infinite; margin:0 auto;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── LEADERBOARD ── */
+.lb-item {
+display:flex; align-items:center; gap:14px; padding:14px 0;
+border-bottom:1px solid var(--border);
+}
+.lb-item:last-child { border-bottom:none; }
+.lb-rank { font-family:var(--font-mono); font-size:1.2em; width:32px; text-align:center; }
+.lb-avatar {
+width:36px; height:36px; border-radius:11px;
+background:linear-gradient(135deg, var(--purple), var(--gold));
+display:flex; align-items:center; justify-content:center;
+font-size:14px; font-weight:800; color:white; flex-shrink:0;
+}
+.lb-info { flex:1; min-width:0; }
+.lb-name { font-weight:700; font-size:0.9em; }
+.lb-meta { font-size:11px; color:var(--muted); }
+.lb-hours { font-family:var(--font-mono); color:var(--gold); font-weight:700; }
+
+/* ── PUBLIC ROOMS ── */
+.room-item {
+display:flex; align-items:center; gap:14px; padding:14px;background:rgba(255,255,255,0.025); border:1px solid var(--border);
+border-radius:var(--r-md); margin-bottom:8px; transition:border-color 0.2s;
+}
+.room-item:hover { border-color:rgba(124,58,237,0.4); }
+.room-icon {
+width:40px; height:40px; border-radius:11px;
+background:rgba(124,58,237,0.15); display:flex; align-items:center;
+justify-content:center; font-size:18px; flex-shrink:0; color:#A78BFA;
+}
+
+/* ── ONBOARDING ── */
+.onboard-steps {
+display:flex; gap:8px; margin-bottom:24px; align-items:center;
+}
+.onboard-step {
+flex:1; height:4px; border-radius:2px; background:rgba(255,255,255,0.1); transition:0.4s;
+}
+.onboard-step.done { background:var(--gold); }
+
+/* ── SUBJECT TAGS ── */
+.subj-tag {
+display:inline-flex; align-items:center; gap:6px;
+padding:7px 12px; border-radius:10px; font-size:12px; font-weight:700;
+background:rgba(255,255,255,0.05); border:1px solid var(--border); margin:4px;
+transition:0.2s;
+}
+.subj-tag:hover { border-color:var(--border-gold); }
+.subj-tag .rm-btn { color:var(--rose); cursor:pointer; font-size:14px; }
+
+/* ── NOTIFICATIONS PANEL ── */
+#notifPanel {
+position:fixed; top:56px; inset-inline-end:16px; width:300px;
+background:var(--card2); border:1px solid var(--border);
+border-radius:var(--r-lg); padding:16px; z-index:9990;
+box-shadow:var(--shadow); display:none;
+}
+.notif-item {
+padding:10px 0; border-bottom:1px solid var(--border); font-size:0.85em;
+}
+.notif-item:last-child { border-bottom:none; }
+
+/* ── SCHEDULE GRID ── */
+.schedule-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+
+/* ── FOCUS MODE OVERLAY ── */
+#focusOverlay {
+position:fixed; inset:0; background:rgba(7,8,16,0.97); z-index:9998;
+display:none; align-items:center; justify-content:center; flex-direction:column;
+text-align:center;
+}
+#focusOverlay.active { display:flex; }
+.focus-overlay-timer {
+font-family:var(--font-mono); font-size:5em; font-weight:700;
+color:var(--gold); letter-spacing:8px; text-shadow:0 0 60px rgba(212,175,55,0.4);
+}
+
+/* ── CONFETTI STAR ── */
+.confetti { position:fixed; pointer-events:none; z-index:99998; font-size:1.5em; animation:confettiFall 1.5s ease forwards; }
+@keyframes confettiFall {
+0% { opacity:1; transform:translateY(0) rotate(0); }
+100% { opacity:0; transform:translateY(80px) rotate(180deg); }
+}
+
+/* ── RESPONSIVE TWEAKS ── */
+@media(max-width:400px) {
+.session-timer-display { font-size:2.2em; letter-spacing:4px; }
+.grid-2 { grid-template-columns:1fr; }
+}
+</style>
+
+</head>
+<body>
+
+
+<!-- ══════════════════════════════ LANG BAR ══════════════════════════════ -->
+
+<div id="langBar">
   <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
   <button class="lang-btn" onclick="setLang('en')">EN</button>
-</div><div id="toast"></div><!-- Auth Overlay --><div id="authOverlay">
-  <div class="auth-card">
-    <div class="auth-logo" id="authLogoText">مـسـار <span class="mizan-badge">PRO</span></div>
-    <p style="color:var(--muted); margin-bottom:28px; font-size:0.9em" id="authSubtitle">نظام إدارة التعليم الذكي</p>
-
-<input class="auth-input" type="email" id="userEmail" placeholder="البريد الإلكتروني">
-<input class="auth-input" type="password" id="userPass" placeholder="كلمة المرور">
-
-<p style="text-align: left; font-size: 0.75em; color: var(--gold); cursor: pointer; margin: -5px 5px 15px;" 
-   onclick="event.preventDefault(); forgotPassword();" id="forgotPassText">
-   نسيت كلمة السر؟
-</p>
-
-<button type="button" class="btn-premium" style="width:100%; font-size:1em" onclick="handleAuth()" id="authLoginBtn">دخول للمنصة</button>
-
-<button type="button" class="btn-premium" style="width:100%; margin-top:10px; background:white; color:#444; display:flex; align-items:center; justify-content:center; gap:10px;" onclick="loginWithGoogle()">
-  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
-  <span id="googleBtnText">الدخول بواسطة جوجل</span>
-</button>
-
-<p style="margin-top:14px; font-size:0.8em; color:var(--muted); cursor:pointer" onclick="toggleAuthMode()" id="authSignupLink">ليس لديك حساب؟ سجل الآن</p>
-
-
 </div>
-</div><!-- Bottom Nav --><nav id="bottomNav" style="display:none">
+
+<!-- ══════════════════════════════ TOAST ══════════════════════════════ -->
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════ AUTH OVERLAY ══════════════════════════════ -->
+
+<div id="authOverlay">
+  <div class="auth-wrap">
+    <div class="auth-logo-area">
+      <div class="auth-logo-main" id="authLogoMain">مـسـار</div>
+      <span class="auth-logo-sub" id="authLogoSub">منصة التعليم الذكي</span>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" onclick="setAuthMode('login')" id="authTabLogin">دخول</button>
+        <button class="auth-tab-btn" onclick="setAuthMode('signup')" id="authTabSignup">تسجيل جديد</button>
+      </div>
+      <div class="auth-field">
+        <i class="ri-mail-line auth-field-icon"></i>
+        <input class="auth-input" type="email" id="userEmail" placeholder="البريد الإلكتروني">
+      </div>
+      <div class="auth-field">
+        <i class="ri-lock-line auth-field-icon"></i>
+        <input class="auth-input" type="password" id="userPass" placeholder="كلمة المرور">
+      </div>
+      <div class="auth-field" id="confirmField" style="display:none">
+        <i class="ri-lock-2-line auth-field-icon"></i>
+        <input class="auth-input" type="password" id="userConfirm" placeholder="تأكيد كلمة المرور">
+      </div>
+      <div class="auth-forgot" onclick="forgotPassword()" id="authForgot">نسيت كلمة المرور؟</div>
+      <button class="btn-auth" onclick="handleAuth()" id="authMainBtn">دخول للمنصة</button>
+      <button class="btn-google" onclick="loginWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+        <span id="googleBtnText">الدخول بـ Google</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ FOCUS OVERLAY ══════════════════════════════ -->
+
+<div id="focusOverlay">
+  <div style="margin-bottom:16px; font-size:2.5em">🎯</div>
+  <div class="focus-overlay-timer" id="focusOverlayTime">25:00</div>
+  <div style="color:var(--muted); margin-top:12px; font-size:0.9em" id="focusOverlayPhase">وضع التركيز</div>
+  <button class="btn btn-secondary" style="margin-top:32px" onclick="exitFocusOverlay()">خروج من وضع التركيز</button>
+</div>
+
+<!-- ══════════════════════════════ BOTTOM NAV ══════════════════════════════ -->
+
+<nav id="bottomNav" style="display:none">
   <div class="nav-item active" onclick="goPage('pageSetup')" data-page="pageSetup">
-    <i class="ri-settings-4-fill"></i><span data-i18n="nav.setup">الإعداد</span>
+    <i class="ri-settings-4-fill"></i><span>الإعداد</span>
   </div>
   <div class="nav-item" onclick="goPage('pageSchedule')" data-page="pageSchedule">
-    <i class="ri-calendar-event-fill"></i><span data-i18n="nav.schedule">الجدول</span>
+    <i class="ri-calendar-check-fill"></i><span>الجدول</span>
   </div>
   <div class="nav-item" onclick="goPage('pageGroup')" data-page="pageGroup">
-    <i class="ri-team-fill"></i>
-    <span data-i18n="nav.group">المجموعة</span>
+    <i class="ri-team-fill"></i><span>المجموعة</span>
     <div class="notif-dot" id="groupNotif" style="display:none"></div>
   </div>
   <div class="nav-item" onclick="goPage('pageArena')" data-page="pageArena">
-    <i class="ri-sword-fill"></i><span data-i18n="nav.arena">التحدي</span>
+    <i class="ri-sword-fill"></i><span>التحدي</span>
   </div>
   <div class="nav-item" onclick="goPage('pageMizan')" data-page="pageMizan">
-    <i class="ri-shield-check-fill"></i><span data-i18n="nav.mizan">الميزان</span>
+    <i class="ri-shield-star-fill"></i><span>الميزان</span>
   </div>
-</nav><!-- ========== PAGE: SETUP ========== --><div id="pageSetup" class="page active">
-  <h2 style="font-family:'Noto Kufi Arabic'; margin-bottom:20px;" data-i18n="setup.title">تخصيص الخطة الذكية 🧠</h2>
-  <div class="glass-card" style="margin-bottom:20px">
-    <div style="margin-bottom:18px">
-      <label class="field-label" data-i18n="setup.name">اسمك الكامل</label>
-      <input type="text" id="studentName" class="field-input">
+</nav>
+
+<!-- ══════════════════════════════ PAGE: SETUP ══════════════════════════════ -->
+
+<div id="pageSetup" class="page active">
+  <div class="page-header">
+    <div class="page-header-icon"><i class="ri-brain-fill"></i></div>
+    <div>
+      <div class="page-title" id="setupTitle">تخصيص الخطة الذكية</div>
+      <div class="page-subtitle" id="setupSub">أخبرنا عنك لنبني جدولك المثالي</div>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px">
-      <div>
-        <label class="field-label" data-i18n="setup.level">المرحلة</label>
+  </div>
+
+  <div class="card card-glow" style="margin-bottom:16px">
+    <div class="field">
+      <label class="field-label">الاسم الكامل</label>
+      <input type="text" id="studentName" class="field-input" placeholder="اسمك هنا...">
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field-label">المرحلة الدراسية</label>
         <select id="studyLevel" class="field-input">
-          <option value="6" data-i18n-opt="level.6">السادس الإعدادي</option>
-          <option value="3" data-i18n-opt="level.3">الثالث متوسط</option>
-          <option value="univ" data-i18n-opt="level.univ">جامعة</option>
-          <option value="other" data-i18n-opt="level.other">أخرى</option>
+          <option value="6">السادس الإعدادي</option>
+          <option value="3">الثالث متوسط</option>
+          <option value="univ">جامعة</option>
+          <option value="other">أخرى</option>
         </select>
       </div>
-      <div>
-        <label class="field-label" data-i18n="setup.peak">وقت ذروة النشاط</label>
+      <div class="field">
+        <label class="field-label">وقت ذروة النشاط</label>
         <select id="peakTime" class="field-input">
-          <option value="morning" data-i18n-opt="peak.morning">صباحاً / فجراً</option>
-          <option value="evening" data-i18n-opt="peak.evening">مساءً</option>
+          <option value="morning">صباحاً / فجراً</option>
+          <option value="evening">مساءً</option>
         </select>
       </div>
     </div>
-    <div style="margin-bottom:18px">
-      <label class="field-label" data-i18n="setup.lang">لغة التطبيق</label>
-      <select id="appLang" class="field-input" onchange="setLang(this.value)">
-        <option value="ar">العربية</option>
-        <option value="en">English</option>
+    <div class="field">
+      <label class="field-label">هدف الساعات اليومية</label>
+      <select id="dailyGoal" class="field-input">
+        <option value="2">ساعتان</option>
+        <option value="4" selected>4 ساعات</option>
+        <option value="6">6 ساعات</option>
+        <option value="8">8 ساعات أو أكثر</option>
       </select>
     </div>
-    <button class="btn-premium" style="width:100%" onclick="saveProfile()" data-i18n="setup.save">حفظ البيانات</button>
-  </div><div class="section-header">
-    <span class="section-title" data-i18n="setup.subjects">إضافة المواد الدراسية</span>
+    <button class="btn btn-primary btn-w100" onclick="saveProfile()">
+      <i class="ri-save-line"></i> حفظ البيانات
+    </button>
   </div>
-  <div class="glass-card" style="border-style:dashed; margin-bottom:14px">
-    <div style="display:grid; grid-template-columns:2fr 1fr; gap:10px; margin-bottom:10px">
-      <input type="text" id="subjName" class="field-input" placeholder="كيمياء، فيزياء..." data-i18n-ph="subj.placeholder">
+
+  <div class="sec-header">
+    <span class="sec-title">📚 المواد الدراسية</span>
+    <span class="badge badge-gold" id="subjCount">0 مواد</span>
+  </div>
+
+  <div class="card" style="border-style:dashed; margin-bottom:14px">
+    <div class="grid-2" style="margin-bottom:10px">
+      <input type="text" id="subjName" class="field-input" placeholder="اسم المادة...">
       <select id="subjDiff" class="field-input">
-        <option value="3" data-i18n-opt="diff.hard">صعبة</option>
-        <option value="2" data-i18n-opt="diff.med">متوسطة</option>
-        <option value="1" data-i18n-opt="diff.easy">سهلة</option>
+        <option value="3">🔴 صعبة</option>
+        <option value="2" selected>🟡 متوسطة</option>
+        <option value="1">🟢 سهلة</option>
       </select>
     </div>
-    <button class="btn-premium btn-green" style="width:100%" onclick="addSubject()" data-i18n="setup.addSubj">＋ إضافة للمسار</button>
+    <div class="field" style="margin-bottom:10px">
+      <input type="number" id="subjChapters" class="field-input" placeholder="عدد الفصول (اختياري)" min="1" max="50">
+    </div>
+    <button class="btn btn-teal-solid btn-w100" onclick="addSubject()">
+      <i class="ri-add-line"></i> إضافة للمسار
+    </button>
   </div>
-  <div id="subjectsList"></div>
-  <button class="btn-premium" style="width:100%; margin-top:25px; font-size:1.15em" onclick="generateAISchedule()" data-i18n="setup.generate">✨ توليد الجدول بالذكاء الاصطناعي</button>
-</div><!-- ========== PAGE: SCHEDULE ========== --><div id="pageSchedule" class="page">
-  <div class="glass-card" style="background:linear-gradient(135deg,#161B22 0%,#0A0C10 100%); margin-bottom:20px">
-    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px">
+
+  <div id="subjectsList" style="margin-bottom:20px; display:flex; flex-wrap:wrap;"></div>
+
+  <button class="btn btn-primary btn-w100" style="font-size:1.1em; padding:16px" onclick="generateAISchedule()">
+    <i class="ri-sparkling-2-fill"></i> توليد الجدول بالذكاء الاصطناعي
+  </button>
+</div>
+
+<!-- ══════════════════════════════ PAGE: SCHEDULE ══════════════════════════════ -->
+
+<div id="pageSchedule" class="page">
+  <div class="hero-card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start">
       <div>
-        <h2 id="welcomeMsg" style="color:var(--gold); font-family:'Noto Kufi Arabic';" data-i18n="schedule.waiting">بانتظار بناء جدولك...</h2>
-        <p id="progressStat" style="color:var(--muted); font-size:0.85em" data-i18n="schedule.progress">أنجز مهامك لترفع مستواك</p>
+        <div style="font-size:0.8em; color:var(--muted); font-weight:700; letter-spacing:1px; margin-bottom:6px">الجدول الذكي</div>
+        <h2 id="welcomeMsg" style="font-family:var(--font-display); color:var(--gold); font-size:1.4em; line-height:1.3">
+          بانتظار بناء جدولك...
+        </h2>
+        <p id="progressStat" style="color:var(--muted); font-size:0.83em; margin-top:6px">
+          أكمل إعداد بياناتك أولاً
+        </p>
       </div>
-      <div style="text-align:center">
-        <div class="streak-flame">🔥</div>
-        <div style="font-family:var(--font-mono); font-size:1.4em; font-weight:700;" id="streakNum">0</div>
-        <div style="font-size:10px; color:var(--muted)" data-i18n="schedule.streak">يوم متواصل</div>
+      <div class="streak-badge">
+        <span class="streak-fire">🔥</span>
+        <span class="streak-num" id="streakNum">0</span>
+        <span class="streak-lbl">يوم</span>
       </div>
     </div>
-    <div style="margin-top:14px">
-      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px">
-        <span data-i18n="schedule.today">إنجاز اليوم</span><span id="todayPct">0%</span>
+    <div class="prog-wrap" style="margin-top:16px">
+      <div class="prog-meta">
+        <span>إنجاز الأسبوع</span>
+        <span id="todayPct">0%</span>
       </div>
       <div class="prog-bar"><div class="prog-fill" id="todayProg" style="width:0%"></div></div>
     </div>
-  </div><!-- Quick Stats --><div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px">
-    <div class="stat-mini"><div class="num" id="totalHours">0</div><div class="lbl" data-i18n="stat.hours">ساعة دراسة</div></div>
-    <div class="stat-mini"><div class="num" id="completedTasks">0</div><div class="lbl" data-i18n="stat.tasks">مهمة منجزة</div></div>
-    <div class="stat-mini"><div class="num" id="rankVal">–</div><div class="lbl" data-i18n="stat.rank">الترتيب</div></div>
-  </div><div id="scheduleContainer" class="schedule-grid"></div>
-</div><!-- ========== PAGE: GROUP STUDY ========== --><div id="pageGroup" class="page">
-  <div style="margin-bottom:20px">
-    <h2 style="font-family:'Noto Kufi Arabic';" data-i18n="group.title">🧑‍🤝‍🧑 الدراسة الجماعية</h2>
-    <p style="color:var(--muted); font-size:0.85em; margin-top:5px" data-i18n="group.subtitle">ادرس مع أصدقائك في وقت واحد</p>
-  </div><!-- Tabs --><div class="tabs">
-    <button class="tab-btn active" onclick="groupTab('myRoom')" id="tabMyRoom" data-i18n="group.tab.myRoom">غرفتي</button>
-    <button class="tab-btn" onclick="groupTab('joinRoom')" id="tabJoinRoom" data-i18n="group.tab.join">الانضمام</button>
-    <button class="tab-btn" onclick="groupTab('leaderboard')" id="tabLeader" data-i18n="group.tab.leader">المتصدرون</button>
-  </div><!-- My Room tab --><div id="groupTabMyRoom">
-    <div class="glass-card" style="margin-bottom:15px">
-      <div class="group-room-header">
+  </div>
+
+  <div class="grid-4" style="margin-bottom:20px">
+    <div class="stat-card"><div class="stat-num" id="totalHours">0</div><div class="stat-lbl">ساعة دراسة</div></div>
+    <div class="stat-card"><div class="stat-num" id="completedTasks">0</div><div class="stat-lbl">مهمة منجزة</div></div>
+    <div class="stat-card"><div class="stat-num" id="rankVal">–</div><div class="stat-lbl">الترتيب</div></div>
+    <div class="stat-card"><div class="stat-num" id="levelVal">1</div><div class="stat-lbl">المستوى</div></div>
+  </div>
+
+  <div id="scheduleContainer" class="schedule-grid"></div>
+</div>
+
+<!-- ══════════════════════════════ PAGE: GROUP ══════════════════════════════ -->
+
+<div id="pageGroup" class="page">
+  <div class="page-header">
+    <div class="page-header-icon" style="background:rgba(124,58,237,0.15); border-color:rgba(124,58,237,0.3); color:#A78BFA">
+      <i class="ri-team-fill"></i>
+    </div>
+    <div>
+      <div class="page-title">الدراسة الجماعية</div>
+      <div class="page-subtitle">ادرس مع أصدقائك في وقت واحد</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="groupTab('myRoom')" id="tabMyRoom">غرفتي</button>
+    <button class="tab-btn" onclick="groupTab('joinRoom')" id="tabJoinRoom">الانضمام</button>
+    <button class="tab-btn" onclick="groupTab('leaderboard')" id="tabLeader">المتصدرون</button>
+  </div>
+
+  <!-- MY ROOM TAB -->
+
+  <div id="groupTabMyRoom">
+    <div class="card card-glow" style="margin-bottom:14px">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px">
         <div>
-          <strong id="myRoomName" data-i18n="group.myRoom">غرفتي الدراسية</strong>
-          <div class="group-tag" style="display:inline-block; margin-inline-start:8px" data-i18n="group.live">🔴 مباشر</div>
+          <span style="font-weight:800; font-size:1em" id="myRoomName">غرفتي الدراسية</span>
+          <span class="badge badge-live" style="margin-inline-start:8px">🔴 مباشر</span>
         </div>
-        <i class="ri-share-line" style="color:var(--gold); cursor:pointer; font-size:20px" onclick="shareRoom()"></i>
+        <div style="display:flex; gap:8px">
+          <button class="btn btn-sm btn-secondary btn-icon" onclick="copyCode()" title="نسخ الكود"><i class="ri-file-copy-line"></i></button>
+          <button class="btn btn-sm btn-secondary btn-icon" onclick="shareRoom()" title="مشاركة"><i class="ri-share-line"></i></button>
+        </div>
       </div>
 
-  <!-- Invite Code -->
-  <div class="invite-code" id="myInviteCode" onclick="copyCode()">MAS-XXXX</div>
-  <p style="text-align:center; font-size:11px; color:var(--muted); margin-top:6px" data-i18n="group.tapCopy">اضغط للنسخ</p>
+```
+  <div class="invite-code-box" id="myInviteCode" onclick="copyCode()">MAS-XXXX</div>
+  <div style="text-align:center; font-size:11px; color:var(--muted); margin-top:6px; margin-bottom:16px">
+    اضغط لنسخ كود الدعوة
+  </div>
 
   <!-- Session Timer -->
-  <div class="session-timer" id="sessionTimer">00:00:00</div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
-    <button class="btn-premium" onclick="toggleSession()" id="sessionBtn" data-i18n="group.startSession">▶ بدء الجلسة</button>
-    <button class="btn-premium" style="background:rgba(255,255,255,0.06); color:var(--text); box-shadow:none" onclick="endSession()" data-i18n="group.endSession">⬛ إنهاء</button>
+  <div class="session-timer-display" id="sessionTimer">00:00:00</div>
+  <div class="grid-2" style="margin-top:10px; gap:10px">
+    <button class="btn btn-primary" onclick="toggleSession()" id="sessionBtn">
+      <i class="ri-play-fill"></i> بدء الجلسة
+    </button>
+    <button class="btn btn-danger" onclick="endSession()">
+      <i class="ri-stop-fill"></i> إنهاء
+    </button>
   </div>
+</div>
 
-  <!-- Pomodoro -->
-  <div style="margin-top:18px; padding-top:15px; border-top:1px solid var(--border)">
-    <div style="text-align:center; margin-bottom:10px; font-size:0.85em; font-weight:600" data-i18n="group.pomodoro">مؤقت بومودورو الجماعي</div>
-    <div class="pomodoro-ring">
-      <svg width="100" height="100" viewBox="0 0 100 100">
-        <circle class="ring-bg" cx="50" cy="50" r="42"/>
-        <circle class="ring-progress" cx="50" cy="50" r="42" id="pomRing"
-          stroke-dasharray="263.9" stroke-dashoffset="0"/>
+<!-- Pomodoro -->
+<div class="card" style="margin-bottom:14px">
+  <div class="sec-header">
+    <span class="sec-title">⏱ بومودورو الجماعي</span>
+    <span class="badge badge-purple" id="pomPhaseBadge">تركيز</span>
+  </div>
+  <div class="pom-container">
+    <div class="pom-ring">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle class="pom-bg" cx="55" cy="55" r="46"/>
+        <circle class="pom-track" cx="55" cy="55" r="46"/>
+        <circle class="pom-prog pom-focus-prog" cx="55" cy="55" r="46"
+          id="pomRing" stroke-dasharray="289.03" stroke-dashoffset="0"/>
       </svg>
-      <div class="ring-text">
-        <span id="pomTime">25:00</span>
-        <small id="pomLabel" data-i18n="pom.focus">تركيز</small>
+      <div class="pom-text">
+        <span class="pom-time" id="pomTime">25:00</span>
+        <span class="pom-phase" id="pomLabel">تركيز</span>
       </div>
     </div>
-    <div style="display:flex; gap:8px; margin-top:12px; justify-content:center">
-      <button class="btn-premium" style="padding:8px 18px; font-size:0.85em" onclick="togglePomodoro()" id="pomBtn" data-i18n="pom.start">بدء</button>
-      <button class="btn-premium" style="padding:8px 18px; font-size:0.85em; background:rgba(255,255,255,0.06); color:var(--text); box-shadow:none" onclick="resetPomodoro()" data-i18n="pom.reset">إعادة</button>
-    </div>
-  </div>
-
-  <!-- Focus Mode -->
-  <div class="focus-mode-bar" onclick="toggleFocusMode()" id="focusModeBar">
-    <i class="ri-focus-3-line"></i>
-    <span style="flex:1; font-size:0.9em" data-i18n="group.focusMode">وضع التركيز الصامت</span>
-    <div id="focusToggle" style="width:36px; height:20px; background:rgba(255,255,255,0.1); border-radius:10px; position:relative; transition:0.3s">
-      <div id="focusBall" style="position:absolute; width:16px; height:16px; background:var(--muted); border-radius:50%; top:2px; right:2px; transition:0.3s"></div>
+    <div style="display:flex; gap:10px; margin-top:14px">
+      <button class="btn btn-primary btn-sm" onclick="togglePomodoro()" id="pomBtn">▶ بدء</button>
+      <button class="btn btn-secondary btn-sm" onclick="resetPomodoro()">↺ إعادة</button>
     </div>
   </div>
 </div>
 
-<!-- Members List -->
-<div class="glass-card" style="margin-bottom:15px">
-  <div class="section-header">
-    <span class="section-title" data-i18n="group.members">الأعضاء النشطون</span>
+<!-- Focus Mode Toggle -->
+<div class="focus-toggle-row" onclick="toggleFocusMode()" id="focusModeBar" style="margin-bottom:14px">
+  <i class="ri-focus-3-line" style="color:#A78BFA; font-size:20px"></i>
+  <span style="flex:1; font-size:0.9em; font-weight:700">وضع التركيز الصامت</span>
+  <div class="toggle-switch" id="focusToggle"><div class="toggle-ball"></div></div>
+</div>
+
+<!-- Members -->
+<div class="card" style="margin-bottom:14px">
+  <div class="sec-header">
+    <span class="sec-title">👥 الأعضاء</span>
     <span style="font-size:12px; color:var(--muted)" id="membersCount">0 / 8</span>
   </div>
-  <div class="members-row" id="membersList"></div>
+  <div id="membersList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
 </div>
 
-<!-- Group Chat -->
-<div class="glass-card">
-  <div class="section-header">
-    <span class="section-title" data-i18n="group.chat">محادثة المجموعة</span>
+<!-- Chat -->
+<div class="card">
+  <div class="sec-header">
+    <span class="sec-title">💬 المحادثة</span>
     <i class="ri-message-3-line" style="color:var(--muted)"></i>
   </div>
-  <div class="group-chat" id="groupChat"></div>
-  <div class="chat-input-row">
-    <input type="text" id="chatInput" placeholder="اكتب رسالة..." data-i18n-ph="chat.placeholder" onkeydown="if(event.key==='Enter')sendChat()">
-    <button onclick="sendChat()"><i class="ri-send-plane-fill"></i></button>
+  <div class="chat-container" id="groupChat">
+    <div class="empty-state" style="padding:20px">
+      <div class="empty-state-icon">💬</div>
+      <div class="empty-state-text">لا توجد رسائل بعد</div>
+    </div>
+  </div>
+  <div class="chat-input-row" id="chatInputRow">
+    <input type="text" class="chat-input" id="chatInput" placeholder="اكتب رسالة..."
+      onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send-btn" onclick="sendChat()"><i class="ri-send-plane-fill"></i></button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- JOIN ROOM TAB -->
+
+  <div id="groupTabJoinRoom" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <h4 style="margin-bottom:14px; font-family:var(--font-display)">الانضمام بكود الدعوة</h4>
+      <input type="text" id="joinCode" class="field-input"
+        placeholder="MAS-XXXX" style="text-align:center; font-family:var(--font-mono); font-size:1.3em; letter-spacing:4px; margin-bottom:12px">
+      <button class="btn btn-primary btn-w100" onclick="joinRoom()">
+        <i class="ri-door-open-fill"></i> انضمام للغرفة
+      </button>
+    </div>
+    <div class="card">
+      <div class="sec-header">
+        <span class="sec-title">🌐 غرف عامة مفتوحة</span>
+        <button class="btn btn-sm btn-secondary" onclick="renderPublicRooms()"><i class="ri-refresh-line"></i></button>
+      </div>
+      <div id="publicRoomsList"><div class="empty-state"><div class="loading-spin"></div></div></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD TAB -->
+
+  <div id="groupTabLeaderboard" style="display:none">
+    <div class="card">
+      <div class="sec-header">
+        <span class="sec-title">🏆 المتصدرون هذا الأسبوع</span>
+      </div>
+      <div id="leaderboardList"><div class="empty-state"><div class="loading-spin"></div></div></div>
+    </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════ PAGE: ARENA ══════════════════════════════ -->
 
-</div><!-- Join Room tab --><div id="groupTabJoinRoom" style="display:none">
-    <div class="glass-card" style="margin-bottom:15px">
-      <h4 style="margin-bottom:14px" data-i18n="group.joinTitle">الانضمام بكود الدعوة</h4>
-      <input type="text" id="joinCode" class="field-input" placeholder="MAS-XXXX" style="text-align:center; font-family:var(--font-mono); font-size:1.2em; letter-spacing:3px; margin-bottom:10px">
-      <button class="btn-premium" style="width:100%" onclick="joinRoom()" data-i18n="group.join">انضمام</button>
+<div id="pageArena" class="page">
+  <div class="page-header">
+    <div class="page-header-icon" style="background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.25); color:#FCA5A5">
+      <i class="ri-sword-fill"></i>
     </div>
-    <div class="glass-card">
-      <h4 style="margin-bottom:14px" data-i18n="group.publicRooms">غرف عامة مفتوحة</h4>
-      <div id="publicRoomsList"></div>
-    </div>
-  </div><!-- Leaderboard tab --><div id="groupTabLeaderboard" style="display:none">
-    <div class="glass-card">
-      <h4 style="margin-bottom:16px" data-i18n="group.weeklyLeader">🏆 المتصدرون هذا الأسبوع</h4>
-      <div id="leaderboardList"></div>
+    <div>
+      <div class="page-title">ساحة التحدي</div>
+      <div class="page-subtitle" id="arenaRatingDisplay">التقييم: 1000</div>
     </div>
   </div>
-</div><!-- ========== PAGE: ARENA ========== --><div id="pageArena" class="page">
-  <h2 style="font-family:'Noto Kufi Arabic'; margin-bottom:20px" data-i18n="arena.title">⚔️ ساحة التحدي</h2>
+
+  <!-- Lobby -->
+
   <div id="arenaLobby">
-    <div class="glass-card" style="text-align:center; margin-bottom:15px; padding:30px">
-      <i class="ri-sword-fill" style="font-size:50px; color:var(--gold)"></i>
-      <h3 style="margin:10px 0" data-i18n="arena.ready">هل أنت مستعد للمنافسة؟</h3>
-      <p style="color:var(--muted); font-size:0.9em; margin-bottom:20px" data-i18n="arena.desc">تنافس مع زملائك في اختبارات سريعة على مواد مختلفة</p>
-      <button class="btn-premium" style="margin-bottom:10px; width:100%" onclick="findArenaMatch()" data-i18n="arena.findMatch">🔍 البحث عن منافس</button>
-      <button class="btn-premium btn-purple" style="width:100%" onclick="startSoloChallenge()" data-i18n="arena.solo">🎯 تحدي فردي</button>
+    <div class="card" style="text-align:center; padding:32px; margin-bottom:14px">
+      <div style="font-size:3.5em; margin-bottom:12px">⚔️</div>
+      <h3 style="font-family:var(--font-display); margin-bottom:8px">هل أنت مستعد للمنافسة؟</h3>
+      <p style="color:var(--muted); font-size:0.87em; margin-bottom:24px">تنافس مع زملائك في اختبارات سريعة</p>
+      <button class="btn btn-primary btn-w100" style="margin-bottom:10px" onclick="findArenaMatch()">
+        <i class="ri-search-line"></i> البحث عن منافس حقيقي
+      </button>
+      <button class="btn btn-purple-solid btn-w100" onclick="startSoloChallenge()">
+        <i class="ri-robot-fill"></i> تحدي ضد الذكاء الاصطناعي
+      </button>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-      <div class="stat-mini"><div class="num" id="arenaWins">0</div><div class="lbl" data-i18n="arena.wins">انتصارات</div></div>
-      <div class="stat-mini"><div class="num" id="arenaRating">1000</div><div class="lbl" data-i18n="arena.rating">التقييم</div></div>
+    <div class="grid-2">
+      <div class="stat-card"><div class="stat-num" id="arenaWins">0</div><div class="stat-lbl">انتصارات</div></div>
+      <div class="stat-card"><div class="stat-num" id="arenaRating">1000</div><div class="stat-lbl">التقييم ELO</div></div>
     </div>
   </div>
+
+  <!-- Game -->
+
   <div id="arenaGame" style="display:none">
-    <div class="arena-vs">
-      <div class="arena-player">
-        <div style="font-size:1.5em; margin-bottom:5px">🧑</div>
-        <div style="font-weight:700; font-size:0.9em" id="player1Name">أنت</div>
-        <div style="font-family:var(--font-mono); color:var(--gold); font-size:1.4em" id="player1Score">0</div>
+    <div class="arena-header">
+      <div class="arena-player-card">
+        <div class="arena-avatar">🧑</div>
+        <div class="arena-name" id="player1Name">أنت</div>
+        <div class="arena-score" style="color:var(--gold)" id="player1Score">0</div>
       </div>
       <div class="arena-vs-badge">VS</div>
-      <div class="arena-player">
-        <div style="font-size:1.5em; margin-bottom:5px">🤖</div>
-        <div style="font-weight:700; font-size:0.9em" id="player2Name">منافس</div>
-        <div style="font-family:var(--font-mono); color:var(--rose); font-size:1.4em" id="player2Score">0</div>
+      <div class="arena-player-card">
+        <div class="arena-avatar">🤖</div>
+        <div class="arena-name" id="player2Name">منافس</div>
+        <div class="arena-score" style="color:var(--rose)" id="player2Score">0</div>
       </div>
     </div>
-    <div class="glass-card">
-      <div style="font-size:12px; color:var(--muted); margin-bottom:10px">
-        <span data-i18n="arena.question">السؤال</span> <span id="qNum">1</span>/5 &nbsp;|&nbsp;
-        <span id="qTimer" style="color:var(--gold); font-family:var(--font-mono)">10</span>s
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num-badge">السؤال <span id="qNum">1</span> / 5</span>
+        <span class="q-timer-badge" id="qTimerBadge">10s</span>
       </div>
-      <p id="qText" style="font-size:1.05em; font-weight:600; margin-bottom:16px; line-height:1.5"></p>
+      <div class="q-text" id="qText"></div>
       <div id="qOptions"></div>
     </div>
   </div>
-</div><!-- ========== PAGE: MIZAN ========== --><div id="pageMizan" class="page">
-  <div style="text-align:center; padding:30px 0 20px">
-    <i class="ri-shield-flash-line" style="font-size:70px; color:var(--gold)"></i>
-    <h1 style="font-family:'Noto Kufi Arabic'; margin-top:8px">رادار الميزان <span class="mizan-badge">LMS</span></h1>
-    <p style="color:var(--muted); font-size:0.85em" data-i18n="mizan.subtitle">تتبع الأداء والتقدم الدراسي</p>
-  </div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px">
-    <div class="stat-mini"><div class="num">95%</div><div class="lbl" data-i18n="mizan.commit">الالتزام</div></div>
-    <div class="stat-mini"><div class="num">120<small style="font-size:12px">h</small></div><div class="lbl" data-i18n="mizan.focus">التركيز</div></div>
-    <div class="stat-mini"><div class="num" id="mizanStreak">0</div><div class="lbl" data-i18n="mizan.streak">يوم متواصل</div></div>
-    <div class="stat-mini"><div class="num" id="mizanGroups">0</div><div class="lbl" data-i18n="mizan.groups">جلسة جماعية</div></div>
-  </div>
-  <div class="glass-card">
-    <h3 style="margin-bottom:12px">🛡️ <span data-i18n="mizan.protection">حماية المسار</span></h3>
-    <p style="font-size:0.85em; color:var(--muted)" data-i18n="mizan.desc">نظام الميزان يرسل تقارير يومية تلقائية إلى ولي الأمر تتضمن نسبة الإنجاز، وقت البدء الفعلي، ونتائج التحديات.</p>
-    <div style="margin-top:15px">
-      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:5px">
-        <span data-i18n="mizan.weeklyGoal">هدف الأسبوع</span><span>72%</span>
-      </div>
-      <div class="prog-bar"><div class="prog-fill" style="width:72%"></div></div>
+</div>
+
+<!-- ══════════════════════════════ PAGE: MIZAN ══════════════════════════════ -->
+
+<div id="pageMizan" class="page">
+  <div class="page-header">
+    <div class="page-header-icon" style="background:rgba(212,175,55,0.12); border-color:rgba(212,175,55,0.3); color:var(--gold)">
+      <i class="ri-shield-star-fill"></i>
+    </div>
+    <div>
+      <div class="page-title">رادار الميزان</div>
+      <div class="page-subtitle">تتبع أدائك وتقدمك الدراسي الحقيقي</div>
     </div>
   </div>
-</div><!-- Firebase SDKs --><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script><script>
-// ===========================
-// i18n – Internationalization
-// ===========================
-const i18n = {
-  ar: {
-    "nav.setup":"الإعداد","nav.schedule":"الجدول","nav.group":"المجموعة","nav.arena":"التحدي","nav.mizan":"الميزان",
-    "setup.title":"تخصيص الخطة الذكية 🧠","setup.name":"اسمك الكامل","setup.level":"المرحلة","setup.peak":"وقت ذروة النشاط",
-    "setup.lang":"لغة التطبيق","setup.save":"حفظ البيانات","setup.subjects":"إضافة المواد الدراسية",
-    "setup.addSubj":"＋ إضافة للمسار","setup.generate":"✨ توليد الجدول بالذكاء الاصطناعي",
-    "schedule.waiting":"بانتظار بناء جدولك...","schedule.progress":"أنجز مهامك لترفع مستواك",
-    "schedule.streak":"يوم متواصل","schedule.today":"إنجاز اليوم",
-    "stat.hours":"ساعة دراسة","stat.tasks":"مهمة منجزة","stat.rank":"الترتيب",
-    "group.title":"🧑‍🤝‍🧑 الدراسة الجماعية","group.subtitle":"ادرس مع أصدقائك في وقت واحد",
-    "group.tab.myRoom":"غرفتي","group.tab.join":"الانضمام","group.tab.leader":"المتصدرون",
-    "group.myRoom":"غرفتي الدراسية","group.live":"🔴 مباشر","group.tapCopy":"اضغط للنسخ",
-    "group.startSession":"▶ بدء الجلسة","group.endSession":"⬛ إنهاء","group.pomodoro":"مؤقت بومودورو الجماعي",
-    "group.focusMode":"وضع التركيز الصامت","group.members":"الأعضاء النشطون","group.chat":"محادثة المجموعة",
-    "group.joinTitle":"الانضمام بكود الدعوة","group.join":"انضمام","group.publicRooms":"غرف عامة مفتوحة",
-    "group.weeklyLeader":"🏆 المتصدرون هذا الأسبوع",
-    "pom.focus":"تركيز","pom.break":"استراحة","pom.start":"بدء","pom.reset":"إعادة",
-    "arena.title":"⚔️ ساحة التحدي","arena.ready":"هل أنت مستعد للمنافسة؟",
-    "arena.desc":"تنافس مع زملائك في اختبارات سريعة على مواد مختلفة","arena.findMatch":"🔍 البحث عن منافس",
-    "arena.solo":"🎯 تحدي فردي","arena.wins":"انتصارات","arena.rating":"التقييم","arena.question":"السؤال",
-    "mizan.subtitle":"تتبع الأداء والتقدم الدراسي","mizan.commit":"الالتزام","mizan.focus":"التركيز",
-    "mizan.streak":"يوم متواصل","mizan.groups":"جلسة جماعية","mizan.protection":"حماية المسار",
-    "mizan.desc":"نظام الميزان يرسل تقارير يومية تلقائية إلى ولي الأمر تتضمن نسبة الإنجاز، وقت البدء الفعلي، ونتائج التحديات.",
-    "mizan.weeklyGoal":"هدف الأسبوع",
-    "level.6":"السادس الإعدادي","level.3":"الثالث متوسط","level.univ":"جامعة","level.other":"أخرى",
-    "peak.morning":"صباحاً / فجراً","peak.evening":"مساءً",
-    "diff.hard":"صعبة","diff.med":"متوسطة","diff.easy":"سهلة",
-    "subj.placeholder":"كيمياء، فيزياء...","chat.placeholder":"اكتب رسالة...",
-    "auth.title":"مـسـار","auth.subtitle":"نظام إدارة التعليم الذكي",
-    "auth.email":"البريد الإلكتروني","auth.pass":"كلمة المرور","auth.login":"دخول للمنصة","auth.signup":"ليس لديك حساب؟ سجل الآن"
-  },
-  en: {
-    "nav.setup":"Setup","nav.schedule":"Schedule","nav.group":"Study Group","nav.arena":"Arena","nav.mizan":"Tracker",
-    "setup.title":"Customize Your Smart Plan 🧠","setup.name":"Full Name","setup.level":"Grade","setup.peak":"Peak Activity Time",
-    "setup.lang":"App Language","setup.save":"Save Profile","setup.subjects":"Add Study Subjects",
-    "setup.addSubj":"＋ Add Subject","setup.generate":"✨ Generate AI Schedule",
-    "schedule.waiting":"Waiting for your schedule...","schedule.progress":"Complete tasks to level up",
-    "schedule.streak":"Day Streak","schedule.today":"Today's Progress",
-    "stat.hours":"Study Hours","stat.tasks":"Tasks Done","stat.rank":"Rank",
-    "group.title":"🧑‍🤝‍🧑 Group Study","group.subtitle":"Study together with your friends in real time",
-    "group.tab.myRoom":"My Room","group.tab.join":"Join","group.tab.leader":"Leaderboard",
-    "group.myRoom":"My Study Room","group.live":"🔴 Live","group.tapCopy":"Tap to copy",
-    "group.startSession":"▶ Start Session","group.endSession":"⬛ End","group.pomodoro":"Group Pomodoro Timer",
-    "group.focusMode":"Silent Focus Mode","group.members":"Active Members","group.chat":"Group Chat",
-    "group.joinTitle":"Join with Invite Code","group.join":"Join","group.publicRooms":"Open Public Rooms",
-    "group.weeklyLeader":"🏆 This Week's Leaders",
-    "pom.focus":"Focus","pom.break":"Break","pom.start":"Start","pom.reset":"Reset",
-    "arena.title":"⚔️ Challenge Arena","arena.ready":"Ready to Compete?",
-    "arena.desc":"Challenge classmates in quick subject-based quizzes","arena.findMatch":"🔍 Find Opponent",
-    "arena.solo":"🎯 Solo Challenge","arena.wins":"Wins","arena.rating":"Rating","arena.question":"Question",
-    "mizan.subtitle":"Track your academic performance & progress","mizan.commit":"Commitment","mizan.focus":"Focus Hours",
-    "mizan.streak":"Day Streak","mizan.groups":"Group Sessions","mizan.protection":"Path Protection",
-    "mizan.desc":"Mizan automatically sends daily reports to your guardian including completion rate, actual study start time, and arena results.",
-    "mizan.weeklyGoal":"Weekly Goal",
-    "level.6":"Grade 12","level.3":"Grade 9","level.univ":"University","level.other":"Other",
-    "peak.morning":"Morning / Dawn","peak.evening":"Evening",
-    "diff.hard":"Hard","diff.med":"Medium","diff.easy":"Easy",
-    "subj.placeholder":"Chemistry, Physics...","chat.placeholder":"Type a message...",
-    "auth.title":"Masar","auth.subtitle":"Smart Education Management System",
-    "auth.email":"Email Address","auth.pass":"Password","auth.login":"Enter Platform","auth.signup":"No account? Sign up"
-  }
-};
 
-let currentLang = 'ar';
+  <div class="mizan-radar">
+    <div class="mizan-stat">
+      <span class="mizan-icon">🎯</span>
+      <span class="mizan-val" id="mizanCommit">0%</span>
+      <span class="mizan-lbl">الالتزام</span>
+    </div>
+    <div class="mizan-stat">
+      <span class="mizan-icon">⏱</span>
+      <span class="mizan-val" id="mizanFocus">0h</span>
+      <span class="mizan-lbl">إجمالي التركيز</span>
+    </div>
+    <div class="mizan-stat">
+      <span class="mizan-icon">🔥</span>
+      <span class="mizan-val" id="mizanStreak">0</span>
+      <span class="mizan-lbl">يوم متواصل</span>
+    </div>
+    <div class="mizan-stat">
+      <span class="mizan-icon">🧑‍🤝‍🧑</span>
+      <span class="mizan-val" id="mizanGroups">0</span>
+      <span class="mizan-lbl">جلسة جماعية</span>
+    </div>
+  </div>
 
-function t(key) { return (i18n[currentLang] && i18n[currentLang][key]) || i18n['ar'][key] || key; }
+  <div class="card" style="margin-bottom:14px">
+    <div class="sec-header">
+      <span class="sec-title">📈 تقدم المواد</span>
+    </div>
+    <div id="subjectProgress"></div>
+  </div>
 
-function setLang(lang) {
-  currentLang = lang;
-  document.documentElement.setAttribute('lang', lang);
-  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-  document.documentElement.setAttribute('data-lang', lang);
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
-    el.textContent = t(k);
-  });
-  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-    el.placeholder = t(el.getAttribute('data-i18n-ph'));
-  });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === (lang==='ar'?'عربي':'EN')));
-  document.getElementById('appLang').value = lang;
-  // Update auth
-  document.getElementById('authLogoText').innerHTML = (lang==='ar'?'مـسـار':'Masar') + ' <span class="mizan-badge">PRO</span>';
-  document.getElementById('authSubtitle').textContent = t('auth.subtitle');
-  document.getElementById('userEmail').placeholder = t('auth.email');
-  document.getElementById('userPass').placeholder = t('auth.pass');
-  document.getElementById('authLoginBtn').textContent = t('auth.login');
-  document.getElementById('authSignupLink').textContent = t('auth.signup');
-  if(userProfile.schedule.length > 0) renderSchedule();
-  renderSubjects();
-}
+  <div class="guardian-card">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px">
+      <div style="font-size:1.8em">🛡️</div>
+      <div>
+        <div style="font-weight:800; font-size:1em">حماية المسار</div>
+        <div style="font-size:0.8em; color:#A78BFA">نظام الميزان LMS</div>
+      </div>
+    </div>
+    <p style="font-size:0.85em; color:var(--muted); line-height:1.7; margin-bottom:14px">
+      يرسل نظام الميزان تقارير يومية تلقائية تتضمن نسبة الإنجاز، وقت البدء الفعلي، ونتائج التحديات.
+    </p>
+    <div>
+      <div class="prog-meta">
+        <span>هدف الأسبوع</span>
+        <span id="weeklyGoalPct">0%</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="weeklyGoalProg" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
 
-// ========================================== // ===========================
-// Firebase Setup
-// ========================================== 
-// 1. إعدادات Firebase (تعريف مرة واحدة فقط)
-// ========================================== 
+<!-- ══════════════════════════════ FIREBASE ══════════════════════════════ -->
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// FIREBASE INIT
+// ══════════════════════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyDeBAgXm6L3NPTitSuzkS37ZFoyy_UvMHk",
   authDomain: "masar-5db30.firebaseapp.com",
@@ -672,24 +1128,91 @@ const firebaseConfig = {
   messagingSenderId: "909223400853",
   appId: "1:909223400853:web:a64c4e243de8c1dc15d29c"
 };
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// المتغيرات العامة
-let currentUser = null;
-let authMode = 'login'; 
-let userProfile = { name:"", subjects:[], schedule:[], streak:0, completedTasks:0, totalHours:0 };
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let userProfile = {
+  name:'', subjects:[], schedule:[], streak:0,
+  completedTasks:0, totalHours:0, arenaWins:0, arenaRating:1000,
+  mizanGroups:0, dailyGoal:4,
+  // الجديد:
+  scheduleByDay: {},
+  dailyStats: {},
+  currentStreak: 0,
+  bestStreak: 0,
+  lastActiveDate: null,
+  totalTasksAllTime: 0
+};
 
-// ========================================== 
-// 2. دوال نظام الدخول والتسجيل
-// ========================================== 
+let currentRoomId = null;
+let sessionRunning = false;
+let sessionSeconds = 0;
+let sessionInterval = null;
+let pomodoroRunning = false;
+let pomodoroSeconds = 25*60;
+let pomodoroPhase = 'focus';
+let pomInterv = null;
+let focusModeActive = false;
+const POM_FOCUS = 25*60, POM_BREAK = 5*60, TOTAL_CIRC = 289.03;
+let arenaMatchId = null;
+let arenaState = { qIndex:0, p1:0, p2:0, timer:null, qTimer:10, questions:[], isPlayer1:false };
+const forbiddenWords = ["واتس","تلي","انستا","تيليغرام","تيك توك"];
 
-// مراقبة حالة المستخدم (هل هو داخل أم خارج؟)
+// ══════════════════════════════════════════════════════════════════
+// ARENA QUESTIONS BANK
+// ══════════════════════════════════════════════════════════════════
+const arenaQuestions = {
+  ar: [
+    { q:'ما هو رمز عنصر الذهب في الجدول الدوري؟', opts:['Au','Go','Gd','Ag'], ans:0 },
+    { q:'كم يساوي ناتج 15 × 12؟', opts:['180','170','160','190'], ans:0 },
+    { q:'ما عاصمة المملكة العربية السعودية؟', opts:['الرياض','جدة','مكة','الدمام'], ans:0 },
+    { q:'من كتب رواية "ألف شمس مشرقة"؟', opts:['خالد حسيني','نجيب محفوظ','غابرييل ماركيز','تولستوي'], ans:0 },
+    { q:'ما هي أكبر قارة في العالم؟', opts:['آسيا','أفريقيا','أمريكا الشمالية','أوروبا'], ans:0 },
+    { q:'كم يساوي الجذر التربيعي لـ 144؟', opts:['12','11','13','14'], ans:0 },
+    { q:'ما سرعة الضوء تقريباً؟', opts:['300,000 كم/ث','150,000 كم/ث','3,000 كم/ث','30,000 كم/ث'], ans:0 },
+    { q:'من هو أول رائد فضاء عربي؟', opts:['سلطان بن سلمان','محمد فارس','أحمد الزواوي','هزاع المنصوري'], ans:0 },
+    { q:'ما عدد أضلاع المسدس المنتظم؟', opts:['6','5','7','8'], ans:0 },
+    { q:'في أي عام اكتشف ألكسندر فلمنغ البنسلين؟', opts:['1928','1905','1945','1918'], ans:0 }
+  ],
+  en: [
+    { q:'What is the chemical symbol for Gold?', opts:['Au','Go','Gd','Ag'], ans:0 },
+    { q:'What is 15 × 12?', opts:['180','170','160','190'], ans:0 },
+    { q:'Capital of Saudi Arabia?', opts:['Riyadh','Jeddah','Mecca','Dammam'], ans:0 },
+    { q:'Who wrote "A Thousand Splendid Suns"?', opts:['Khaled Hosseini','Naguib Mahfouz','G.Marquez','Tolstoy'], ans:0 },
+    { q:'Largest continent?', opts:['Asia','Africa','N. America','Europe'], ans:0 },
+    { q:'Square root of 144?', opts:['12','11','13','14'], ans:0 },
+    { q:'Speed of light?', opts:['300,000 km/s','150,000 km/s','3,000 km/s','30,000 km/s'], ans:0 },
+    { q:'First Arab astronaut?', opts:['Sultan Al Saud','Mohammad Faris','Hazza Al Mansouri','Ahmad'], ans:0 },
+    { q:'Sides of a regular hexagon?', opts:['6','5','7','8'], ans:0 },
+    { q:'Year penicillin was discovered?', opts:['1928','1905','1945','1918'], ans:0 }
+  ]
+};
+
+// ══════════════════════════════════════════════════════════════════
+// I18N
+// ══════════════════════════════════════════════════════════════════
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', lang==='ar'?'rtl':'ltr');
+  document.documentElement.setAttribute('data-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', (lang==='ar'?b.textContent==='عربي':b.textContent==='EN'))
+  );
+  document.getElementById('appLang') && (document.getElementById('appLang').value = lang);
+  // Re-render dynamic content
+  if(userProfile.schedule?.length) renderSchedule();
+  renderSubjects();
+  updateMizan();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// AUTH SYSTEM
+// ══════════════════════════════════════════════════════════════════
 auth.onAuthStateChanged(user => {
   if(user) {
     currentUser = user;
@@ -703,130 +1226,144 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-// دالة التبديل بين وضع التسجيل والدخول
-function toggleAuthMode() {
-  authMode = (authMode === 'login') ? 'signup' : 'login';
-  const loginBtn = document.getElementById('authLoginBtn');
-  const signupLink = document.getElementById('authSignupLink');
-  
-  if (authMode === 'signup') {
-    loginBtn.textContent = currentLang === 'ar' ? 'إنشاء حساب جديد' : 'Create Account';
-    signupLink.textContent = currentLang === 'ar' ? 'لديك حساب؟ سجل دخول' : 'Have an account? Login';
-  } else {
-    loginBtn.textContent = currentLang === 'ar' ? 'دخول للمنصة' : 'Enter Platform';
-    signupLink.textContent = currentLang === 'ar' ? 'ليس لديك حساب؟ سجل الآن' : 'No account? Sign up';
-  }
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById('authTabLogin').classList.toggle('active', mode==='login');
+  document.getElementById('authTabSignup').classList.toggle('active', mode==='signup');
+  document.getElementById('confirmField').style.display = mode==='signup'?'block':'none';
+  document.getElementById('authForgot').style.display = mode==='login'?'block':'none';
+  document.getElementById('authMainBtn').textContent =
+    mode==='signup'?(currentLang==='ar'?'إنشاء حساب':'Create Account'):(currentLang==='ar'?'دخول للمنصة':'Enter Platform');
 }
 
-
-// دالة الزر الرئيسي (دخول أو تسجيل)
 async function handleAuth() {
   const email = document.getElementById('userEmail').value.trim();
   const pass = document.getElementById('userPass').value;
-  
-  if(!email || !pass) return showToast(currentLang === 'ar' ? '⚠️ أدخل البيانات' : '⚠️ Enter credentials');
-
+  if(!email || !pass) return showToast('⚠️ أدخل بياناتك');
+  if(authMode==='signup') {
+    const confirm = document.getElementById('userConfirm').value;
+    if(pass !== confirm) return showToast('❌ كلمتا المرور غير متطابقتين');
+    if(pass.length < 6) return showToast('❌ كلمة المرور قصيرة جداً');
+  }
   try {
-    if(authMode === 'signup') {
-      // إنشاء الحساب
-      const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-      // إرسال رسالة تأكيد البريد فوراً
-      await userCredential.user.sendEmailVerification();
-      
-      showToast(currentLang === 'ar' ? '📧 تم إنشاء الحساب! تفقد بريدك لتأكيده' : '📧 Account created! Check email to verify');
+    if(authMode==='signup') {
+      const cred = await auth.createUserWithEmailAndPassword(email, pass);
+      await cred.user.sendEmailVerification();
+      showToast('📧 تم الإنشاء! تحقق من بريدك');
     } else {
-      // تسجيل الدخول العادي
       await auth.signInWithEmailAndPassword(email, pass);
-      showToast(currentLang === 'ar' ? '✅ تم الدخول' : '✅ Logged in');
     }
-  } catch(e) { 
-      console.error(e);
-      // ترجمة بسيطة للأخطاء الشائعة
-      let msg = e.message;
-      if(e.code === 'auth/email-already-in-use') msg = "الحساب موجود بالفعل";
-      if(e.code === 'auth/weak-password') msg = "كلمة المرور ضعيفة جداً";
-      showToast("❌ " + msg); 
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found':'المستخدم غير موجود',
+      'auth/wrong-password':'كلمة المرور خاطئة',
+      'auth/email-already-in-use':'البريد مستخدم بالفعل',
+      'auth/invalid-email':'البريد غير صحيح',
+      'auth/weak-password':'كلمة المرور ضعيفة'
+    };
+    showToast('❌ ' + (msgs[e.code] || e.message));
   }
 }
 
-//
-// دالة نسيان كلمة المرور
 async function forgotPassword() {
-  const emailInput = document.getElementById('userEmail');
-  const email = emailInput.value.trim();
-
-  if (!email) {
-    showToast(currentLang === 'ar' ? '⚠️ يرجى كتابة بريدك أولاً' : '⚠️ Please enter your email first');
-    return;
-  }
-
+  const email = document.getElementById('userEmail').value.trim();
+  if(!email) return showToast('⚠️ أدخل بريدك الإلكتروني أولاً');
   try {
-    // إرسال طلب إعادة التعيين
-    await firebase.auth().sendPasswordResetEmail(email);
-    showToast(currentLang === 'ar' ? '📧 أرسلنا رابط الاستعادة لبريدك' : '📧 Reset link sent to your email');
-  } catch (error) {
-    console.error(error);
-    if (error.code === 'auth/user-not-found') {
-      showToast(currentLang === 'ar' ? '❌ هذا الحساب غير موجود' : '❌ User not found');
-    } else {
-      showToast("❌ " + error.message);
-    }
+    await auth.sendPasswordResetEmail(email);
+    showToast('📧 تم إرسال رابط الاستعادة');
+  } catch(e) {
+    showToast('❌ ' + (e.code==='auth/user-not-found'?'الحساب غير موجود':e.message));
   }
 }
-
-// دالة تسجيل الدخول بجوجل
 
 async function loginWithGoogle() {
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
-    // هذا السطر يمنع المتصفح من عمل Refresh ويفتح نافذة منبثقة
-    const result = await auth.signInWithPopup(provider);
-    showToast(currentLang === 'ar' ? '✅ تم الدخول بجوجل' : '✅ Logged in with Google');
-  } catch (e) {
-    console.error(e);
-    if(e.code === 'auth/operation-not-supported-in-this-environment') {
-        showToast("⚠️ جوجل لا يعمل إلا عند رفع الموقع على رابط (Hosting)");
-    } else {
-        showToast("❌ " + e.message);
+    await auth.signInWithPopup(provider);
+  } catch(e) {
+    showToast('❌ ' + (e.code==='auth/operation-not-supported-in-this-environment'
+      ?'Google يعمل فقط على رابط Hosting':e.message));
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// USER DATA
+// ══════════════════════════════════════════════════════════════════
+async function loadUserData(uid) {
+  try {
+    const doc = await db.collection('users').doc(uid).get();
+    if(doc.exists) {
+      userProfile = { ...userProfile, ...doc.data() };
+      document.getElementById('studentName').value = userProfile.name || '';
+      document.getElementById('peakTime').value = userProfile.peakTime || 'morning';
+      document.getElementById('dailyGoal').value = userProfile.dailyGoal || 4;
+      renderSubjects();
+      if(userProfile.schedule?.length) renderSchedule();
+      updateStats();
+      updateMizan();
+      document.getElementById('arenaWins').textContent = userProfile.arenaWins || 0;
+      document.getElementById('arenaRating').textContent = userProfile.arenaRating || 1000;
+      document.getElementById('arenaRatingDisplay').textContent = 'التقييم: ' + (userProfile.arenaRating || 1000);
+      
+      // ✅ أضفنا هذا السطر:
+      checkRefreshSchedule();
+    }
+  } catch(e) { console.error(e); }
+}
+
+// ✅ أضفنا هذه الدالة الجديدة كاملة:
+async function checkRefreshSchedule() {
+  const today = getTodayStr();
+  if (!userProfile.scheduleByDay[today]) {
+    if (userProfile.schedule && userProfile.schedule.length > 0) {
+      const times = ['04:30','06:00','08:00','10:00','12:30','15:00','17:00','19:00','21:00'];
+      const subjects = userProfile.subjects;
+      const sorted = [...subjects].sort((a,b) => b.diff - a.diff);
+      
+      const tasks = [];
+      for (let i = 0; i < Math.min(6, times.length); i++) {
+        const subj = sorted[i % sorted.length];
+        tasks.push({
+          time: times[i],
+          subject: subj.name,
+          difficulty: subj.diff,
+          done: false,
+          startedAt: null,
+          completedAt: null,
+          duration: 0,
+          attempts: 0
+        });
+      }
+      userProfile.scheduleByDay[today] = tasks;
     }
   }
 }
 
-// ========================================== 
-// 3. بقية دوال التطبيق (تحميل البيانات، الجدول، إلخ)
-// ========================================== 
-
-async function loadUserData(uid) {
-  const doc = await db.collection('users').doc(uid).get();
-  if(doc.exists) {
-    userProfile = { ...userProfile, ...doc.data() };
-    document.getElementById('studentName').value = userProfile.name || '';
-    renderSubjects();
-    if(userProfile.schedule && userProfile.schedule.length > 0) renderSchedule();
-    updateStats();
-  }
-}
 
 async function saveProfile() {
   if(!currentUser) return;
-  userProfile.name = document.getElementById('studentName').value;
-  await db.collection('users').doc(currentUser.uid).set(userProfile, { merge: true });
-  showToast("💾 " + (currentLang==='ar'?'تم الحفظ':'Saved'));
+  userProfile.name = document.getElementById('studentName').value.trim();
+  userProfile.peakTime = document.getElementById('peakTime').value;
+  userProfile.dailyGoal = parseInt(document.getElementById('dailyGoal').value);
+  userProfile.totalHours = parseInt(document.getElementById('totalHours').textContent) || 0;
+  try {
+    await db.collection('users').doc(currentUser.uid).set(userProfile, { merge:true });
+    showToast('💾 تم الحفظ بنجاح');
+  } catch(e) { showToast('❌ فشل الحفظ'); }
 }
 
-// [تكملة بقية الدوال لديك: addSubject, generateAISchedule, إلخ...]
-
-
-// ===========================
-// Subjects
-// ===========================
+// ══════════════════════════════════════════════════════════════════
+// SUBJECTS
+// ══════════════════════════════════════════════════════════════════
 function addSubject() {
   const name = document.getElementById('subjName').value.trim();
   const diff = parseInt(document.getElementById('subjDiff').value);
-  if(!name) return showToast(currentLang==='ar'?'أدخل اسم المادة':'Enter subject name');
+  const chapters = parseInt(document.getElementById('subjChapters').value) || 0;
+  if(!name) return showToast('⚠️ أدخل اسم المادة');
   userProfile.subjects = userProfile.subjects || [];
-  userProfile.subjects.push({ id: Date.now(), name, diff });
+  userProfile.subjects.push({ id:Date.now(), name, diff, chapters, progress:0 });
   document.getElementById('subjName').value = '';
+  document.getElementById('subjChapters').value = '';
   renderSubjects();
   saveProfile();
 }
@@ -839,881 +1376,989 @@ function removeSubject(id) {
 
 function renderSubjects() {
   const c = document.getElementById('subjectsList');
-  if(!userProfile.subjects || !userProfile.subjects.length) { c.innerHTML=''; return; }
+  if(!userProfile.subjects?.length) { c.innerHTML=''; return; }
+  document.getElementById('subjCount').textContent = userProfile.subjects.length + ' مواد';
+  const diffColor = { 3:'var(--rose)', 2:'var(--gold)', 1:'var(--teal)' };
   c.innerHTML = userProfile.subjects.map(s => `
-    <div class="task-item" style="border-inline-end-color:${s.diff===3?'var(--rose)':'var(--gold)'}">
-      <div style="flex:1"><strong>${s.name}</strong></div>
-      <div style="font-size:0.75em; color:var(--muted)">${s.diff===3?t('diff.hard'):s.diff===2?t('diff.med'):t('diff.easy')}</div>
-      <i class="ri-delete-bin-line" style="color:var(--rose); cursor:pointer" onclick="removeSubject(${s.id})"></i>
+    <div class="subj-tag">
+      <span style="width:8px; height:8px; border-radius:50%; background:${diffColor[s.diff]}; flex-shrink:0; display:inline-block"></span>
+      <span>${s.name}</span>
+      ${s.chapters?`<span style="color:var(--muted); font-size:10px">(${s.chapters} فصل)</span>`:''}
+      <span class="rm-btn" onclick="removeSubject(${s.id})"><i class="ri-close-line"></i></span>
     </div>
   `).join('');
 }
 
-// ===========================
-// AI Schedule
-// ===========================
+// ══════════════════════════════════════════════════════════════════
+// SCHEDULE GENERATION
+// ══════════════════════════════════════════════════════════════════
 function generateAISchedule() {
-  if(!userProfile.subjects || !userProfile.subjects.length) return showToast(currentLang==='ar'?'أضف مواد أولاً!':'Add subjects first!');
-  showToast('🪄 ' + (currentLang==='ar'?'جارٍ تحليل البيانات...':'Analyzing data...'));
-  const peak = document.getElementById('peakTime').value;
+  if(!userProfile.subjects?.length) return showToast('⚠️ أضف مواد أولاً');
+  showToast('🪄 جارٍ تحليل بياناتك...');
 
+  const peak = userProfile.peakTime || document.getElementById('peakTime').value;
   const daysAr = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
   const daysEn = ['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'];
-  
-  const sortedSubjs = [...userProfile.subjects].sort((a,b) => b.diff - a.diff);
-  let schedule = [];
+  const typesAr = ['تركيز عميق','مراجعة','حل مسائل','اختبار قصير','مراجعة سريعة'];
+  const typesEn = ['Deep Focus','Review','Problem Solving','Mini Test','Quick Review'];
+  const times = {
+    morning: ['04:30','06:00','07:30','09:00','10:30'],
+    evening: ['15:00','16:30','18:00','19:30','21:00']
+  };
 
-  for(let i = 0; i < 7; i++) {
-    const subj1 = sortedSubjs[i % sortedSubjs.length];
-    const subj2 = sortedSubjs[(i+1) % sortedSubjs.length];
-    schedule.push({
-      dayAr: daysAr[i], dayEn: daysEn[i],
-      tasks: [
-        { time: peak==='morning'?"05:00":"16:00", subject: subj1.name, typeAr:'تركيز عميق', typeEn:'Deep Focus', done: false },
-        { time: peak==='morning'?"09:00":"20:00", subject: subj2.name, typeAr:'مراجعة', typeEn:'Review', done: false }
-      ]
-    });
-  }
+  const sorted = [...userProfile.subjects].sort((a,b) => b.diff - a.diff);
+  const schedule = daysAr.map((dayAr, i) => {
+    const dayTimes = times[peak];
+    const tasksCount = i === 5 ? 1 : (i % 7 === 6 ? 1 : Math.min(3, sorted.length));
+    const tasks = Array.from({ length:tasksCount }, (_, ti) => ({
+      time: dayTimes[ti % dayTimes.length],
+      subject: sorted[(i + ti) % sorted.length].name,
+      typeAr: typesAr[ti % typesAr.length],
+      typeEn: typesEn[ti % typesEn.length],
+      done: false,
+      startedAt: null,
+      completedAt: null,
+      duration: 0,
+      attempts: 0
+    }));
+    return { dayAr, dayEn:daysEn[i], tasks };
+  });
 
   userProfile.schedule = schedule;
+  
+  // خزن الجدول في scheduleByDay
+  const today = getTodayStr();
+  const todayIndex = new Date().getDay();
+  const todayScheduleIndex = todayIndex === 0 ? 6 : todayIndex - 1;
+  if (schedule[todayScheduleIndex]) {
+    userProfile.scheduleByDay[today] = JSON.parse(JSON.stringify(schedule[todayScheduleIndex].tasks));
+  }
+  
   renderSchedule();
   saveProfile();
-  goPage('pageSchedule');
+  setTimeout(() => goPage('pageSchedule'), 300);
+}
+
+function refreshSchedule() {
+  const today = getTodayStr();
+  let tasks = userProfile.scheduleByDay[today];
+  
+  if (!tasks) {
+    tasks = (userProfile.schedule[0]?.tasks || []);
+  }
+
+  const done = tasks.filter(t => t.done).length;
+  const total = tasks.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const duration = tasks.reduce((a,t) => a + (t.duration || 0), 0);
+  const hours = Math.round(duration / 3600000 * 10) / 10;
+
+  // Save stats
+  userProfile.dailyStats[today] = { done, total, pct, duration };
+  userProfile.totalTasksAllTime = (userProfile.totalTasksAllTime || 0) + done;
+
+  // Update streak
+  if (pct >= 50 && total > 0) {
+    const yesterday = new Date(); 
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    if (userProfile.lastActiveDate === yesterdayStr) {
+      userProfile.currentStreak++;
+    } else {
+      userProfile.currentStreak = 1;
+    }
+    
+    if (userProfile.currentStreak > userProfile.bestStreak) {
+      userProfile.bestStreak = userProfile.currentStreak;
+    }
+    
+    userProfile.lastActiveDate = today;
+  }
+
+  // Clear and regenerate
+  delete userProfile.scheduleByDay[today];
+  
+  if (userProfile.schedule && userProfile.schedule.length > 0) {
+    // Generate using old logic
+    const times = ['04:30','06:00','08:00','10:00','12:30','15:00','17:00','19:00','21:00'];
+    const subjects = userProfile.subjects;
+    const sorted = [...subjects].sort((a,b) => b.diff - a.diff);
+    
+    const tasks = [];
+    for (let i = 0; i < Math.min(6, times.length); i++) {
+      const subj = sorted[i % sorted.length];
+      tasks.push({
+        time: times[i],
+        subject: subj.name,
+        difficulty: subj.diff,
+        done: false,
+        startedAt: null,
+        completedAt: null,
+        duration: 0,
+        attempts: 0
+      });
+    }
+    userProfile.scheduleByDay[today] = tasks;
+  }
+
+  renderSchedule();
+  saveProfile();
+
+  // Show summary
+  document.getElementById('summaryDone').textContent = done;
+  document.getElementById('summaryHours').textContent = hours + 'h';
+  document.getElementById('summaryPercentage').textContent = pct + '%';
+  document.getElementById('summaryStreak').textContent = userProfile.currentStreak + '🔥';
+  document.getElementById('refreshModal').classList.add('show');
+}
+
+function closeRefreshModal() {
+  document.getElementById('refreshModal').classList.remove('show');
+  showToast('🎉 جدول جديد جاهز!');
 }
 
 function renderSchedule() {
   const c = document.getElementById('scheduleContainer');
-  const wm = document.getElementById('welcomeMsg');
-  if(userProfile.name) wm.textContent = (currentLang==='ar'?'خطة ':'Plan of ') + userProfile.name;
-  
-  c.innerHTML = (userProfile.schedule||[]).map((day, di) => `
-    <div class="glass-card">
-      <h4 style="color:var(--gold); border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:14px;">
-        ${currentLang==='ar' ? day.dayAr : day.dayEn}
-      </h4>
-      ${(day.tasks||[]).map((t, ti) => `
-        <div class="task-item" style="opacity:${t.done?0.5:1}">
-          <div class="task-time">${t.time}</div>
-          <div style="flex:1">
-            <div style="font-weight:bold; ${t.done?'text-decoration:line-through':''}">${t.subject}</div>
-            <div style="font-size:0.75em; color:var(--muted)">${currentLang==='ar'?t.typeAr:t.typeEn}</div>
+  const today = new Date().getDay();
+  const todayIndex = today === 0 ? 6 : today - 1;
+  const todayStr = getTodayStr();
+
+  c.innerHTML = (userProfile.schedule||[]).map((day, di) => {
+    // جاب التاريخ بتاع اليوم
+    const dayDate = new Date();
+    dayDate.setDate(dayDate.getDate() + (di - todayIndex));
+    const dateStr = dayDate.toISOString().split('T')[0];
+    
+    // استخدم scheduleByDay لو موجود
+    let tasks = userProfile.scheduleByDay[dateStr] || day.tasks || [];
+    const done = tasks.filter(t => t.done).length;
+    const total = tasks.length;
+    const percentage = total ? Math.round(done / total * 100) : 0;
+    const isToday = dateStr === todayStr;
+
+    return `
+      <div class="card${isToday ? ' card-glow' : ''}" style="position:relative">
+        ${isToday ? '<span class="badge badge-live" style="position:absolute;top:14px;inset-inline-end:14px;">اليوم</span>' : ''}
+        <h4 style="color:var(--gold); font-family:var(--font-display); border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:14px;">
+          ${currentLang==='ar' ? day.dayAr : day.dayEn}
+        </h4>
+        ${tasks.map((t, ti) => `
+          <div class="task-item${t.done?' done':''}">
+            <div class="task-time">${t.time}</div>
+            <div class="task-info">
+              <div class="task-subj">${t.subject}</div>
+              <div class="task-type">${currentLang==='ar'?t.typeAr||'عادي':t.typeEn||'Regular'}</div>
+              <div class="task-meta" style="font-size:0.7em; color:var(--muted2); margin-top:2px;">
+                ${t.startedAt ? '⏱ ' + formatTime(t.startedAt) : ''}
+                ${t.completedAt ? ' • ✅ ' + formatTime(t.completedAt) : ''}
+                ${t.duration > 0 ? ' • ' + Math.round(t.duration / 60000) + ' دقيقة' : ''}
+              </div>
+            </div>
+            <button class="task-done-btn" onclick="toggleTask(${di},${ti})">
+              ${t.done ? '<i class="ri-check-line"></i>' : ''}
+            </button>
           </div>
-          <i class="ri-checkbox-circle-${t.done?'fill':'line'}" style="font-size:22px; color:${t.done?'var(--teal)':'var(--muted)'}; cursor:pointer"
-            onclick="toggleTask(${di},${ti})"></i>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+
+  if(userProfile.name) {
+    document.getElementById('welcomeMsg').textContent =
+      (currentLang==='ar'?'خطة ':'Plan of ') + userProfile.name;
+  }
   updateStats();
 }
 
+
+function formatTime(isoStr) {
+  const d = new Date(isoStr);
+  return d.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+}
+
+
 function toggleTask(di, ti) {
-  userProfile.schedule[di].tasks[ti].done = !userProfile.schedule[di].tasks[ti].done;
+  const today = getTodayStr();
+  let tasks = userProfile.scheduleByDay[today];
+  
+  if (!tasks) {
+    // Fallback to old schedule
+    tasks = userProfile.schedule[di].tasks;
+  }
+  
+  const task = tasks[ti];
+  task.done = !task.done;
+  
+  if (task.done) {
+    task.completedAt = new Date().toISOString();
+    if (!task.startedAt) task.startedAt = new Date().toISOString();
+    task.duration = new Date(task.completedAt) - new Date(task.startedAt);
+    spawnConfetti();
+  } else {
+    task.completedAt = null;
+    task.duration = 0;
+  }
+  
+  task.attempts = (task.attempts || 0) + 1;
   renderSchedule();
   saveProfile();
 }
 
+
 function updateStats() {
-  const total = (userProfile.schedule||[]).reduce((a,d) => a + (d.tasks||[]).length, 0);
-  const done  = (userProfile.schedule||[]).reduce((a,d) => a + (d.tasks||[]).filter(t=>t.done).length, 0);
-  const pct   = total ? Math.round(done/total*100) : 0;
+  const today = getTodayStr();
+  const tasks = userProfile.scheduleByDay[today] || [];
+  const done = tasks.filter(t => t.done).length;
+  const total = tasks.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+
   document.getElementById('todayPct').textContent = pct + '%';
   document.getElementById('todayProg').style.width = pct + '%';
+  
+  const hours = Math.round(tasks.reduce((a,t) => a + (t.duration || 0), 0) / 3600000 * 10) / 10;
+  document.getElementById('totalHours').textContent = hours;
   document.getElementById('completedTasks').textContent = done;
-  document.getElementById('totalHours').textContent = Math.round(done * 1.5);
-  document.getElementById('streakNum').textContent = userProfile.streak || 0;
-  document.getElementById('mizanStreak').textContent = userProfile.streak || 0;
+  document.getElementById('streakNum').textContent = userProfile.currentStreak || 0;
+  
+  const level = Math.floor(userProfile.totalTasksAllTime / 20) + 1;
+  document.getElementById('levelVal').textContent = level;
+  document.getElementById('progressStat').textContent = `${done} / ${total} مهمة`;
 
-  if(currentUser) {
-    db.collection('users').orderBy('totalHours','desc').get().then(snap => {
-      const rank = snap.docs.findIndex(d => d.id === currentUser.uid) + 1;
-      document.getElementById('rankVal').textContent = rank || '–';
-    });
+  updateStreak();
+  updateMizan();
+}
+
+function updateStreak() {
+  const today = getTodayStr();
+  const tasks = userProfile.scheduleByDay[today] || [];
+  const total = tasks.length;
+  const done = tasks.filter(t => t.done).length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+
+  if (pct >= 50 && total > 0) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    if (userProfile.lastActiveDate === yesterdayStr) {
+      userProfile.currentStreak = (userProfile.currentStreak || 0) + 1;
+    } else {
+      userProfile.currentStreak = 1;
+    }
+
+    if (userProfile.currentStreak > userProfile.bestStreak) {
+      userProfile.bestStreak = userProfile.currentStreak;
+    }
+
+    userProfile.lastActiveDate = today;
   }
 }
 
+function getTodayStr() {
+  return new Date().toISOString().split('T')[0];
+}
 
 
-// ===========================
-// Group Study System
-// ===========================
-let sessionRunning = false;
-let sessionSeconds = 0;
-let sessionInterval = null;
-let pomodoroRunning = false;
-let pomodoroSeconds = 25 * 60;
-let pomodoroPhase = 'focus';
-let pomInterv = null;
-let focusMode = false;
-const POM_FOCUS = 25 * 60;
-const POM_BREAK = 5 * 60;
+function updateMizan() {
+  const total = (userProfile.schedule||[]).reduce((a,d) => a+(d.tasks||[]).length, 0);
+  const done  = (userProfile.schedule||[]).reduce((a,d) => a+(d.tasks||[]).filter(t=>t.done).length, 0);
+  const pct   = total ? Math.round(done/total*100) : 0;
+  document.getElementById('mizanCommit').textContent = pct + '%';
+  document.getElementById('mizanFocus').textContent = Math.round(done*1.5) + 'h';
+  document.getElementById('mizanStreak').textContent = userProfile.streak || 0;
+  document.getElementById('mizanGroups').textContent = userProfile.mizanGroups || 0;
+  document.getElementById('weeklyGoalPct').textContent = pct + '%';
+  document.getElementById('weeklyGoalProg').style.width = pct + '%';
 
-const TOTAL_CIRC = 263.9;
-let currentRoomId = null; // ID الغرفة الحالية
+  // Subject progress bars
+  const c = document.getElementById('subjectProgress');
+  if(!userProfile.subjects?.length) { c.innerHTML='<p style="color:var(--muted);font-size:0.85em">لا توجد مواد</p>'; return; }
+  c.innerHTML = userProfile.subjects.map(s => {
+    const subjTasks = (userProfile.schedule||[]).reduce((acc,d) =>
+      acc + d.tasks.filter(t => t.subject===s.name && t.done).length, 0);
+    const subjTotal = (userProfile.schedule||[]).reduce((acc,d) =>
+      acc + d.tasks.filter(t => t.subject===s.name).length, 0);
+    const p = subjTotal ? Math.round(subjTasks/subjTotal*100) : 0;
+    return `
+      <div style="margin-bottom:14px">
+        <div class="prog-meta">
+          <span style="font-weight:700">${s.name}</span>
+          <span>${p}%</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div>
+      </div>`;
+  }).join('');
+}
 
+// ══════════════════════════════════════════════════════════════════
+// GROUP STUDY
+// ══════════════════════════════════════════════════════════════════
 async function initGroupRoom() {
-  if(!currentUser) return;
-  
+  if (!currentUser) return;
   const roomRef = db.collection('rooms').doc(currentUser.uid);
   const roomDoc = await roomRef.get();
-  
   let code;
-  if(!roomDoc.exists) {
-    code = 'MAS-' + Math.random().toString(36).substring(2,6).toUpperCase();
-    await roomRef.set({ 
-      code, 
-      owner: currentUser.uid, 
-      members: {}, 
-      createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+  if (!roomDoc.exists) {
+    code = 'MAS-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+    await roomRef.set({
+      code,
+      owner: currentUser.uid,
+      members: {},
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   } else {
     code = roomDoc.data().code;
   }
-  
-  currentRoomId = currentUser.uid; // افتراضياً غرفته هو
+  currentRoomId = currentUser.uid;
   document.getElementById('myInviteCode').textContent = code;
-  
-  // تسجيل نفسه عضو
-  await roomRef.update({ 
-    [`members.${currentUser.uid}`]: { 
-      name: userProfile.name || 'مجهول', 
-      status: 'online' 
-    } 
+  await roomRef.update({
+    [`members.${currentUser.uid}`]: { name: userProfile.name || 'مجهول', status: 'online' }
   });
-  
   listenToRoom(currentUser.uid);
+  updateRoomControlsVisibility();
 }
 
-function syncSessionFromDB(data) {
-  if(data.sessionTimer !== undefined) {
-    const h = String(Math.floor(data.sessionTimer/3600)).padStart(2,'0');
-    const m = String(Math.floor((data.sessionTimer%3600)/60)).padStart(2,'0');
-    const s = String(data.sessionTimer%60).padStart(2,'0');
-    document.getElementById('sessionTimer').textContent = `${h}:${m}:${s}`;
-  }
-  if(data.sessionRunning !== undefined) {
-    const btn = document.getElementById('sessionBtn');
-    btn.textContent = data.sessionRunning 
-      ? '⏸ ' + (currentLang==='ar'?'إيقاف مؤقت':'Pause')
-      : t('group.startSession');
-  }
-}
 
-function syncPomodoroFromDB(data) {
-  if(data.pomSeconds !== undefined) {
-    pomodoroSeconds = data.pomSeconds;
-    pomodoroPhase = data.pomPhase || 'focus';
-    updatePomUI();
-    document.getElementById('pomLabel').textContent = t(pomodoroPhase==='focus'?'pom.focus':'pom.break');
-  }
-}
-
-// دالة مستقلة للمراقبة
-// ======= CHAT SYSTEM =======
 function listenToRoom(roomId) {
   currentRoomId = roomId;
-
-  // مراقبة الغرفة (أعضاء + جلسة + بومودورو)
   db.collection('rooms').doc(roomId).onSnapshot(snap => {
-    if(!snap.exists) return;
+    if (!snap.exists) return;
     const data = snap.data();
     const members = data.members || {};
-    document.getElementById('membersCount').textContent = 
-      `${Object.keys(members).length} / 8`;
+    document.getElementById('membersCount').textContent = Object.keys(members).length + ' / 8';
     renderMembersLive(members);
     syncSessionFromDB(data);
     syncPomodoroFromDB(data);
+
+    const inputRow = document.getElementById('chatInputRow');
+    if (data.isFocusMode) {
+      inputRow.classList.add('chat-disabled');
+      document.getElementById('chatInput').placeholder = '🔕 وضع التركيز مفعّل';
+    } else {
+      inputRow.classList.remove('chat-disabled');
+      document.getElementById('chatInput').placeholder = 'اكتب رسالة...';
+    }
+
+    const isOn = data.isFocusMode || false;
+    document.getElementById('focusToggle').classList.toggle('on', isOn);
+    focusModeActive = isOn;
   });
 
-  // مراقبة الشات - بدون أي شرط
-  db.collection('rooms').doc(roomId)
-    .collection('chat')
-    .onSnapshot(snap => {
-      console.log('chat snapshot:', snap.size); // للتأكد
+  db.collection('rooms').doc(roomId).collection('chat')
+    .orderBy('time', 'asc').onSnapshot(snap => {
       const msgs = [];
-      snap.forEach(doc => msgs.push(doc.data()));
-      msgs.sort((a,b) => (a.time?.seconds||0) - (b.time?.seconds||0));
+      snap.forEach(d => msgs.push(d.data()));
       renderChatLive(msgs);
-    }, err => {
-      console.error('chat error:', err); // لو فيه خطأ يظهر هنا
     });
+}
+
+function updateRoomControlsVisibility() {
+  const owner = isRoomOwner();
+  document.getElementById('sessionBtn').style.display = owner ? '' : 'none';
+  document.querySelector('[onclick="endSession()"]').style.display = owner ? '' : 'none';
+  document.getElementById('pomBtn').style.display = owner ? '' : 'none';
+  document.querySelector('[onclick="resetPomodoro()"]').style.display = owner ? '' : 'none';
+  document.getElementById('focusModeBar').style.pointerEvents = owner ? '' : 'none';
+  document.getElementById('focusModeBar').style.opacity = owner ? '' : '0.5';
+}
+
+function renderMembersLive(members) {
+  const c = document.getElementById('membersList');
+  const entries = Object.entries(members);
+  if(!entries.length) {
+    c.innerHTML = '<span style="color:var(--muted); font-size:12px">لا أعضاء نشطون</span>';
+    return;
+  }
+  c.innerHTML = entries.map(([uid, m]) => `
+    <div class="member-chip">
+      <div class="member-dot ${m.status==='online'?'online':m.status==='away'?'away':'offline'}"></div>
+      <span>${m.name || 'مجهول'}</span>
+      ${uid===currentUser?.uid?'<span class="badge badge-gold" style="font-size:8px; padding:1px 5px">أنت</span>':''}
+    </div>
+  `).join('');
+}
+
+let memberSessionInterval = null;
+let memberSessionBase = 0;
+
+function syncSessionFromDB(data) {
+  if (data.sessionTimer === undefined) return;
+  memberSessionBase = data.sessionTimer;
+
+  const el = document.getElementById('sessionTimer');
+  el.classList.toggle('running', data.sessionRunning);
+
+  clearInterval(memberSessionInterval);
+
+  const fmt = n => String(n).padStart(2, '0');
+  const display = s => {
+    el.textContent = `${fmt(Math.floor(s / 3600))}:${fmt(Math.floor((s % 3600) / 60))}:${fmt(s % 60)}`;
+  };
+  display(memberSessionBase);
+
+  if (data.sessionRunning && !isRoomOwner()) {
+    let local = memberSessionBase;
+    memberSessionInterval = setInterval(() => {
+      local++;
+      display(local);
+    }, 1000);
+  }
+}
+
+
+function syncPomodoroFromDB(data) {
+  if(data.pomSeconds !== undefined && !pomodoroRunning) {
+    pomodoroSeconds = data.pomSeconds;
+    pomodoroPhase = data.pomPhase || 'focus';
+    updatePomUI();
+  }
 }
 
 function renderChatLive(msgs) {
   const c = document.getElementById('groupChat');
   if(!msgs.length) {
-    c.innerHTML = '<p style="text-align:center; color:var(--muted); font-size:12px; padding:20px">لا توجد رسائل بعد</p>';
+    c.innerHTML = '<div class="empty-state" style="padding:20px"><div class="empty-state-icon">💬</div><div class="empty-state-text">لا توجد رسائل بعد</div></div>';
     return;
   }
   c.innerHTML = msgs.map(m => `
     <div class="chat-msg">
-      <div class="chat-avatar">${m.avatar || '؟'}</div>
+      <div class="chat-avatar">${(m.name||'؟')[0]}</div>
       <div class="chat-bubble">
-        <div class="chat-name">${m.name || 'مجهول'}</div>
-        ${m.msg || ''}
+        <div class="chat-name">${m.name||'مجهول'}</div>
+        ${escapeHtml(m.msg||'')}
       </div>
     </div>
   `).join('');
   c.scrollTop = c.scrollHeight;
 }
 
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 async function sendChat() {
   const inp = document.getElementById('chatInput');
   const msg = inp.value.trim();
-  if(!msg || !currentUser) return;
-
-  if(!currentRoomId) {
-    showToast('⚠️ انضم لغرفة أولاً');
-    return;
-  }
-
-  const name = userProfile.name || 'مجهول';
+  if(!msg || !currentUser || !currentRoomId) return;
+  if(forbiddenWords.some(w => msg.includes(w)))
+    return showToast('⚠️ رسالة غير مناسبة');
   inp.value = '';
-
   try {
-    await db.collection('rooms').doc(currentRoomId)
-      .collection('chat').add({
-        name,
-        msg,
-        avatar: name[0] || '؟',
-        uid: currentUser.uid,
-        time: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    console.log('✅ رسالة أرسلت بنجاح');
-  } catch(e) {
-    console.error('❌ خطأ في الإرسال:', e);
-    showToast('❌ فشل إرسال الرسالة: ' + e.message);
-  }
+    await db.collection('rooms').doc(currentRoomId).collection('chat').add({
+      name: userProfile.name || 'مجهول',
+      msg, uid: currentUser.uid,
+      avatar: (userProfile.name||'؟')[0],
+      time: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch(e) { showToast('❌ فشل الإرسال'); }
 }
 
 function groupTab(tab) {
-  ['myRoom','joinRoom','leaderboard'].forEach(t => {
-    const el = document.getElementById('groupTab' + t.charAt(0).toUpperCase() + t.slice(1));
-    if(el) el.style.display = t===tab ? 'block':'none';
+  ['myRoom', 'joinRoom', 'leaderboard'].forEach(t => {
+    const key = 'groupTab' + t[0].toUpperCase() + t.slice(1);
+    const el = document.getElementById(key);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
   });
+  const map = { myRoom: 'tabMyRoom', joinRoom: 'tabJoinRoom', leaderboard: 'tabLeader' };
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const map = { myRoom:'tabMyRoom', joinRoom:'tabJoinRoom', leaderboard:'tabLeader' };
   document.getElementById(map[tab])?.classList.add('active');
+  if (tab === 'joinRoom') renderPublicRooms();
+  if (tab === 'leaderboard') renderLeaderboard();
 }
-
 function copyCode() {
   const code = document.getElementById('myInviteCode').textContent;
   navigator.clipboard?.writeText(code).catch(()=>{});
-  showToast('📋 ' + (currentLang==='ar'?'تم النسخ':'Copied!'));
+  showToast('📋 تم نسخ الكود: ' + code);
 }
 
 function shareRoom() {
   const code = document.getElementById('myInviteCode').textContent;
-  if(navigator.share) navigator.share({ title:'Masar Study Room', text: code });
+  if(navigator.share) navigator.share({ title:'Masar Room', text:'انضم لغرفتي: '+code });
   else copyCode();
 }
 
 async function joinRoom() {
   const code = document.getElementById('joinCode').value.trim().toUpperCase();
-  if(!code) return showToast('أدخل الكود');
-  
-  // البحث عن الغرفة
+  if (!code) return showToast('⚠️ أدخل الكود');
   const snap = await db.collection('rooms').where('code', '==', code).limit(1).get();
-  if(snap.empty) return showToast('❌ الغرفة غير موجودة');
-  
+  if (snap.empty) return showToast('❌ الغرفة غير موجودة');
   const roomDoc = snap.docs[0];
-  const roomId = roomDoc.id; // UID صاحب الغرفة
-  
-  // إضافة نفسه كعضو في غرفة صاحبها
+  const roomId = roomDoc.id;
+  const members = roomDoc.data().members || {};
+  if (Object.keys(members).length >= 8) return showToast('⚠️ الغرفة ممتلئة (8/8)');
   await roomDoc.ref.update({
-    [`members.${currentUser.uid}`]: { 
-      name: userProfile.name || 'ضيف', 
-      status: 'online' 
-    }
+    [`members.${currentUser.uid}`]: { name: userProfile.name || 'ضيف', status: 'online' }
   });
-  
-  showToast(`🚀 انضممت إلى ${code}`);
-  
-  // المراقبة تصير على غرفة صاحبها مو غرفته هو
+  showToast('🚀 انضممت لـ ' + code);
   listenToRoom(roomId);
-  
-  groupTab('myRoom');
+  updateRoomControlsVisibility();
+}
+
+function joinPublicRoom(code) {
+  document.getElementById('joinCode').value = code;
+  joinRoom();
 }
 
 async function renderPublicRooms() {
-  const snap = await db.collection('rooms').limit(5).get();
   const c = document.getElementById('publicRoomsList');
-  if(snap.empty) { c.innerHTML = '<p style="color:var(--muted); text-align:center">لا توجد غرف متاحة</p>'; return; }
-  
-  c.innerHTML = snap.docs.map(d => {
-    const r = d.data();
-    const memberCount = Object.keys(r.members || {}).length;
-    return `
-      <div class="group-room" style="display:flex; align-items:center; gap:12px; padding:14px">
-        <div style="flex:1">
-          <strong>${r.code}</strong>
-          <div style="font-size:11px; color:var(--muted); margin-top:3px">${memberCount} أعضاء</div>
-        </div>
-        <button class="btn-premium btn-purple" style="padding:7px 14px; font-size:12px" 
-          onclick="document.getElementById('joinCode').value='${r.code}'; groupTab('joinRoom'); joinRoom()">انضمام</button>
-      </div>`;
-  }).join('');
+  c.innerHTML = '<div class="empty-state"><div class="loading-spin"></div></div>';
+  try {
+    const snap = await db.collection('rooms').limit(10).get();
+    if(snap.empty) {
+      c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏠</div><div class="empty-state-text">لا توجد غرف متاحة حالياً</div></div>';
+      return;
+    }
+    c.innerHTML = snap.docs.map(d => {
+      const r = d.data();
+      const count = Object.keys(r.members||{}).length;
+      return `
+        <div class="room-item">
+          <div class="room-icon"><i class="ri-door-open-line"></i></div>
+          <div style="flex:1; min-width:0">
+            <div style="font-weight:800; color:var(--gold); font-family:var(--font-mono)">${r.code||'–'}</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:2px">${count} أعضاء • ${count<8?'متاحة':'ممتلئة'}</div>
+          </div>
+          ${count < 8 ? `<button class="btn btn-sm btn-purple-solid" onclick="joinPublicRoom('${r.code}')">انضمام</button>` : '<span class="badge badge-rose">ممتلئة</span>'}
+        </div>`;
+    }).join('');
+  } catch(e) { c.innerHTML = '<div class="empty-state"><div class="empty-state-text" style="color:var(--rose)">خطأ في التحميل</div></div>'; }
 }
+
 async function renderLeaderboard() {
-  const snap = await db.collection('users').orderBy('totalHours', 'desc').limit(10).get();
-  const medals = ['🥇','🥈','🥉'];
-  
-  document.getElementById('leaderboardList').innerHTML = snap.docs.map((d, i) => {
-    const u = d.data();
-    return `
-      <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)">
-        <span style="font-size:1.3em; width:30px; text-align:center">${medals[i] || (i+1)}</span>
-        <div style="flex:1">
-          <strong>${u.name || 'مجهول'}</strong>
-          <div style="font-size:11px; color:var(--muted)">${u.totalHours || 0}h · 🔥${u.streak || 0}</div>
-        </div>
-      </div>`;
-  }).join('');
+  const c = document.getElementById('leaderboardList');
+  c.innerHTML = '<div class="empty-state"><div class="loading-spin"></div></div>';
+  try {
+    const snap = await db.collection('users').orderBy('totalHours','desc').limit(10).get();
+    const medals = ['🥇','🥈','🥉'];
+    c.innerHTML = snap.docs.map((d, i) => {
+      const u = d.data();
+      const isMe = d.id === currentUser?.uid;
+      return `
+        <div class="lb-item${isMe?' card-glow':''}">
+          <div class="lb-rank">${medals[i]||`#${i+1}`}</div>
+          <div class="lb-avatar">${(u.name||'؟')[0]}</div>
+          <div class="lb-info">
+            <div class="lb-name">${u.name||'مجهول'}${isMe?'<span class="badge badge-gold" style="margin-inline-start:6px;font-size:8px">أنت</span>':''}</div>
+            <div class="lb-meta">🔥${u.streak||0} يوم • ${u.arenaWins||0} انتصار</div>
+          </div>
+          <div class="lb-hours">${u.totalHours||0}h</div>
+        </div>`;
+    }).join('') || '<div class="empty-state"><div class="empty-state-text">لا يوجد ترتيب بعد</div></div>';
+  } catch(e) { c.innerHTML=''; }
 }
 
-// Session Timer
-
-function isRoomOwner() {
-  return currentRoomId === currentUser.uid;
-}
+// ── Session ──
+function isRoomOwner() { return currentRoomId === currentUser?.uid; }
 
 function toggleSession() {
-  if(!isRoomOwner()) {
-    showToast('⛔ ' + (currentLang==='ar'?'فقط صاحب الغرفة يتحكم':'Only owner can control'));
-    return;
-  }
-
+  if (!isRoomOwner()) return showToast('⛔ صاحب الغرفة فقط يتحكم');
   sessionRunning = !sessionRunning;
-
-  if(sessionRunning) {
-    // حفظ في Firestore إن الجلسة بدأت
+  const btn = document.getElementById('sessionBtn');
+  if (sessionRunning) {
     db.collection('rooms').doc(currentRoomId).update({ sessionRunning: true });
-    
     sessionInterval = setInterval(() => {
       sessionSeconds++;
-      // حفظ الوقت في Firestore كل ثانية
-      db.collection('rooms').doc(currentRoomId).update({ 
-        sessionTimer: sessionSeconds,
-        sessionRunning: true
-      });
+      const h = String(Math.floor(sessionSeconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((sessionSeconds % 3600) / 60)).padStart(2, '0');
+      const s = String(sessionSeconds % 60).padStart(2, '0');
+      document.getElementById('sessionTimer').textContent = `${h}:${m}:${s}`;
+      document.getElementById('sessionTimer').classList.add('running');
+      if (sessionSeconds % 10 === 0) {
+        db.collection('rooms').doc(currentRoomId).update({ sessionTimer: sessionSeconds });
+      }
+      if (focusModeActive) {
+        document.getElementById('focusOverlayTime').textContent = `${h}:${m}:${s}`;
+      }
     }, 1000);
-    
-    document.getElementById('sessionBtn').textContent = '⏸ ' + (currentLang==='ar'?'إيقاف مؤقت':'Pause');
+    btn.innerHTML = '<i class="ri-pause-fill"></i> إيقاف مؤقت';
   } else {
     clearInterval(sessionInterval);
     db.collection('rooms').doc(currentRoomId).update({ sessionRunning: false });
-    document.getElementById('sessionBtn').textContent = t('group.startSession');
-    userProfile.totalHours = (userProfile.totalHours||0) + Math.round(sessionSeconds/3600*10)/10;
-    saveProfile();
+    btn.innerHTML = '<i class="ri-play-fill"></i> بدء الجلسة';
+    document.getElementById('sessionTimer').classList.remove('running');
   }
 }
 
+function endSession() {
+  if(!isRoomOwner()) return showToast('⛔ صاحب الغرفة فقط يتحكم');
+  clearInterval(sessionInterval);
+  sessionRunning = false; sessionSeconds = 0;
+  document.getElementById('sessionTimer').textContent = '00:00:00';
+  document.getElementById('sessionTimer').classList.remove('running');
+  document.getElementById('sessionBtn').innerHTML = '<i class="ri-play-fill"></i> بدء الجلسة';
+  db.collection('rooms').doc(currentRoomId).update({ sessionTimer:0, sessionRunning:false });
+  userProfile.mizanGroups = (userProfile.mizanGroups||0) + 1;
+  saveProfile();
+  showToast('📊 تم حفظ الجلسة');
+}
+
+// ── Pomodoro ──
 function togglePomodoro() {
-  if(!isRoomOwner()) {
-    showToast('⛔ ' + (currentLang==='ar'?'فقط صاحب الغرفة يتحكم':'Only owner can control'));
-    return;
-  }
-
+  if(!isRoomOwner()) return showToast('⛔ صاحب الغرفة فقط يتحكم');
   pomodoroRunning = !pomodoroRunning;
-
+  const btn = document.getElementById('pomBtn');
   if(pomodoroRunning) {
-    document.getElementById('pomBtn').textContent = '⏸ ' + (currentLang==='ar'?'إيقاف':'Pause');
-    
+    btn.textContent = '⏸ إيقاف';
     pomInterv = setInterval(() => {
       pomodoroSeconds--;
-      
-      // حفظ في Firestore كل ثانية
-      db.collection('rooms').doc(currentRoomId).update({
-        pomSeconds: pomodoroSeconds,
-        pomPhase: pomodoroPhase,
-        pomRunning: true
-      });
-      
       updatePomUI();
-      
+      if(pomodoroSeconds % 5 === 0)
+        db.collection('rooms').doc(currentRoomId).update({ pomSeconds:pomodoroSeconds, pomPhase:pomodoroPhase, pomRunning:true });
       if(pomodoroSeconds <= 0) {
         clearInterval(pomInterv);
         pomodoroRunning = false;
-        pomodoroPhase = pomodoroPhase==='focus' ? 'break' : 'focus';
-        pomodoroSeconds = pomodoroPhase==='focus' ? POM_FOCUS : POM_BREAK;
-        
-        db.collection('rooms').doc(currentRoomId).update({
-          pomSeconds: pomodoroSeconds,
-          pomPhase: pomodoroPhase,
-          pomRunning: false
-        });
-        
-        document.getElementById('pomLabel').textContent = t(pomodoroPhase==='focus'?'pom.focus':'pom.break');
-        showToast(pomodoroPhase==='focus' ? '📚 تركيز' : '☕ استراحة');
+        pomodoroPhase = pomodoroPhase==='focus'?'break':'focus';
+        pomodoroSeconds = pomodoroPhase==='focus'?POM_FOCUS:POM_BREAK;
+        btn.textContent = '▶ بدء';
+        document.getElementById('pomLabel').textContent = pomodoroPhase==='focus'?'تركيز':'استراحة';
+        document.getElementById('pomPhaseBadge').textContent = pomodoroPhase==='focus'?'تركيز':'استراحة';
+        document.getElementById('pomRing').className = `pom-prog pom-${pomodoroPhase}-prog`;
+        db.collection('rooms').doc(currentRoomId).update({ pomSeconds:pomodoroSeconds, pomPhase:pomodoroPhase, pomRunning:false });
+        showToast(pomodoroPhase==='focus'?'📚 وقت التركيز!':'☕ وقت الاستراحة!');
         updatePomUI();
       }
     }, 1000);
   } else {
     clearInterval(pomInterv);
-    document.getElementById('pomBtn').textContent = t('pom.start');
-    db.collection('rooms').doc(currentRoomId).update({ pomRunning: false });
+    btn.textContent = '▶ بدء';
+    db.collection('rooms').doc(currentRoomId).update({ pomRunning:false });
   }
-}
-function endSession() {
-  if(!isRoomOwner()) {
-    showToast('⛔ ' + (currentLang==='ar'?'فقط صاحب الغرفة يتحكم':'Only owner can control'));
-    return;
-  }
-  clearInterval(sessionInterval);
-  sessionRunning = false;
-  sessionSeconds = 0;
-  
-  db.collection('rooms').doc(currentRoomId).update({ 
-    sessionTimer: 0, 
-    sessionRunning: false 
-  });
-  
-  showToast('📊 ' + (currentLang==='ar'?'تم حفظ الجلسة':'Session saved'));
-  userProfile.mizanGroups = (userProfile.mizanGroups||0) + 1;
-  document.getElementById('mizanGroups').textContent = userProfile.mizanGroups;
-  saveProfile();
 }
 
 function resetPomodoro() {
-  if(!isRoomOwner()) {
-    showToast('⛔ ' + (currentLang==='ar'?'فقط صاحب الغرفة يتحكم':'Only owner can control'));
-    return;
-  }
+  if(!isRoomOwner()) return showToast('⛔ صاحب الغرفة فقط يتحكم');
   clearInterval(pomInterv);
-  pomodoroRunning = false;
-  pomodoroPhase = 'focus';
-  pomodoroSeconds = POM_FOCUS;
-  
-  db.collection('rooms').doc(currentRoomId).update({
-    pomSeconds: POM_FOCUS,
-    pomPhase: 'focus',
-    pomRunning: false
-  });
-  
-  document.getElementById('pomBtn').textContent = t('pom.start');
-  document.getElementById('pomLabel').textContent = t('pom.focus');
+  pomodoroRunning = false; pomodoroPhase = 'focus'; pomodoroSeconds = POM_FOCUS;
+  document.getElementById('pomBtn').textContent = '▶ بدء';
+  document.getElementById('pomLabel').textContent = 'تركيز';
+  document.getElementById('pomPhaseBadge').textContent = 'تركيز';
+  document.getElementById('pomRing').className = 'pom-prog pom-focus-prog';
+  db.collection('rooms').doc(currentRoomId)?.update({ pomSeconds:POM_FOCUS, pomPhase:'focus', pomRunning:false });
   updatePomUI();
 }
+
 function updatePomUI() {
-  const total = pomodoroPhase==='focus' ? POM_FOCUS : POM_BREAK;
+  const total = pomodoroPhase==='focus'?POM_FOCUS:POM_BREAK;
   const mins = String(Math.floor(pomodoroSeconds/60)).padStart(2,'0');
   const secs = String(pomodoroSeconds%60).padStart(2,'0');
   document.getElementById('pomTime').textContent = `${mins}:${secs}`;
   const progress = pomodoroSeconds / total;
-  const offset = TOTAL_CIRC * progress;
-  document.getElementById('pomRing').style.strokeDashoffset = TOTAL_CIRC - offset;
+  document.getElementById('pomRing').style.strokeDashoffset = TOTAL_CIRC * (1 - progress);
+  // Update focus overlay if active
+  if(focusModeActive) document.getElementById('focusOverlayTime').textContent = `${mins}:${secs}`;
 }
 
-// Focus Mode
-function toggleFocusMode() {
-  focusMode = !focusMode;
-  const ball = document.getElementById('focusBall');
-  const toggle = document.getElementById('focusToggle');
-  if(focusMode) {
-    ball.style.background = 'var(--gold)';
-    toggle.style.background = 'rgba(212,175,55,0.2)';
-    if(currentLang==='ar') ball.style.right = 'auto', ball.style.left = '2px';
-    else ball.style.left = 'auto', ball.style.right = '2px';
-    showToast('🔕 ' + (currentLang==='ar'?'وضع التركيز مفعّل':'Focus mode ON'));
-  } else {
-    ball.style.background = 'var(--muted)';
-    toggle.style.background = 'rgba(255,255,255,0.1)';
-    if(currentLang==='ar') ball.style.left = 'auto', ball.style.right = '2px';
-    else ball.style.right = 'auto', ball.style.left = '2px';
-    showToast('🔔 ' + (currentLang==='ar'?'وضع التركيز متوقف':'Focus mode OFF'));
-  }
-}
-
-// ===========================
-// Arena
-// ===========================
-// Arena - Player Creates Questions
-// ===========================
-let arenaMatchId = null;
-let arenaState = { qIndex:0, p1:0, p2:0, timer:null, qTimer:10, questions:[], isPlayer1: false };
- async function findArenaMatch() {
-  showToast('🔍 ' + (currentLang==='ar'?'جارٍ البحث...':'Searching...'));
-  
+// ── Focus Mode ──
+async function toggleFocusMode() {
+  if(!isRoomOwner()) return showToast('⛔ صاحب الغرفة فقط يتحكم');
+  const roomRef = db.collection('rooms').doc(currentRoomId);
   try {
-    document.getElementById('arenaLobby').style.display = 'none';
-    document.getElementById('arenaGame').style.display = 'block';
-    document.getElementById('player1Name').textContent = userProfile.name || 'أنت';
-    document.getElementById('player2Name').textContent = '⏳';
-    document.getElementById('qText').textContent = '';
-    document.getElementById('qOptions').innerHTML = `
-      <div style="text-align:center; padding:40px; color:var(--muted)">
-        <i class="ri-loader-4-line" style="font-size:50px; color:var(--gold)"></i>
-        <p style="margin-top:15px; font-size:1.1em">
-          ${currentLang==='ar'?'جارٍ البحث...':'Searching...'}
-        </p>
-      </div>
-    `;
+    const doc = await roomRef.get();
+    const newStatus = !(doc.data().isFocusMode || false);
+    await roomRef.update({ isFocusMode:newStatus });
+    if(newStatus) {
+      document.getElementById('focusOverlay').classList.add('active');
+      showToast('🔕 وضع التركيز مفعّل');
+    } else {
+      document.getElementById('focusOverlay').classList.remove('active');
+      showToast('🔔 وضع التركيز متوقف');
+    }
+  } catch(e) { showToast('❌ خطأ'); }
+}
 
-const allMatches = await db.collection('matches')
-  .orderBy('createdAt', 'desc')
-  .limit(10)
-  .get();
+function exitFocusOverlay() {
+  document.getElementById('focusOverlay').classList.remove('active');
+}
 
-console.log('كل المباريات:', allMatches.size);
+// ══════════════════════════════════════════════════════════════════
+// ARENA
+// ══════════════════════════════════════════════════════════════════
+async function findArenaMatch() {
+  showToast('🔍 جارٍ البحث...');
+  document.getElementById('arenaLobby').style.display = 'none';
+  document.getElementById('arenaGame').style.display = 'block';
+  document.getElementById('player1Name').textContent = userProfile.name || 'أنت';
+  document.getElementById('player2Name').textContent = '⏳';
+  document.getElementById('qText').textContent = '';
+  showLoadingArena(currentLang==='ar'?'جارٍ البحث عن منافس...':'Searching for opponent...');
 
-const twoMinsAgo = new Date(Date.now() - 2 * 60 * 1000);
+  try {
+    const twoMinsAgo = new Date(Date.now() - 2*60*1000);
+    const all = await db.collection('matches').orderBy('createdAt','desc').limit(20).get();
+    const waiting = all.docs.find(d => {
+      const data = d.data();
+      const ca = data.createdAt?.toDate ? data.createdAt.toDate() : new Date(0);
+      return data.status==='waiting' && data.player1?.uid !== currentUser.uid && ca >= twoMinsAgo;
+    });
 
-const waitingMatch = allMatches.docs.find(d => {
-  const data = d.data();
-  const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : new Date(0);
-  return data.status === 'waiting' && 
-         data.player1?.uid !== currentUser.uid &&
-         createdAt >= twoMinsAgo;
-});
-
-console.log('مباراة منتظرة:', waitingMatch ? waitingMatch.id : 'لا يوجد');
- 
-    
-    if(waitingMatch) {
-      console.log('✅ وجدنا منافس حقيقي:', waitingMatch.id);
-      arenaMatchId = waitingMatch.id;
+    if(waiting) {
+      arenaMatchId = waiting.id;
       arenaState.isPlayer1 = false;
-
-      await waitingMatch.ref.update({
-        player2: { 
-          uid: currentUser.uid, 
-          name: userProfile.name || 'ضيف', 
-          score: 0 
-        },
-        status: 'asking'
+      await waiting.ref.update({
+        player2: { uid:currentUser.uid, name:userProfile.name||'ضيف', score:0 },
+        status:'asking'
       });
-
-      document.getElementById('player1Name').textContent = waitingMatch.data().player1?.name || 'منافس';
+      document.getElementById('player1Name').textContent = waiting.data().player1?.name || 'منافس';
       document.getElementById('player2Name').textContent = userProfile.name || 'أنت';
       showWaitingForQuestion();
-      showToast('⚔️ ' + (currentLang==='ar'?'وجدنا منافس!':'Found opponent!'));
-
+      showToast('⚔️ وجدنا منافس!');
     } else {
-      console.log('⏳ ننشئ مباراة جديدة');
       arenaState.isPlayer1 = true;
-
-      const matchRef = await db.collection('matches').add({
-        player1: { 
-          uid: currentUser.uid, 
-          name: userProfile.name || 'لاعب', 
-          score: 0 
-        },
-        player2: null,
-        status: 'waiting',
-        questions: [],
-        currentQ: 0,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      const ref = await db.collection('matches').add({
+        player1: { uid:currentUser.uid, name:userProfile.name||'لاعب', score:0 },
+        player2:null, status:'waiting', questions:[], currentQ:0,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
       });
-
-      arenaMatchId = matchRef.id;
-      showToast('⏳ ' + (currentLang==='ar'?'بانتظار منافس...':'Waiting...'));
-      
-      document.getElementById('qOptions').innerHTML = `
-        <div style="text-align:center; padding:40px; color:var(--muted)">
-          <i class="ri-time-line" style="font-size:50px; color:var(--gold)"></i>
-          <p style="margin-top:15px; font-size:1.1em">
-            ${currentLang==='ar'?'بانتظار منافس...':'Waiting for opponent...'}
-          </p>
-          <p style="font-size:0.8em; margin-top:8px; color:var(--gold)">
-            ${currentLang==='ar'?'اطلب من صديقك يضغط البحث':'Ask your friend to search'}
-          </p>
-        </div>
-      `;
+      arenaMatchId = ref.id;
+      showLoadingArena(currentLang==='ar'?'بانتظار منافس...':'Waiting for opponent...');
+      showToast('⏳ أخبر صديقك بالضغط على "بحث"');
     }
-
     listenToMatch(arenaMatchId);
-
   } catch(e) {
-    console.error('❌ خطأ:', e);
     showToast('❌ ' + e.message);
-    document.getElementById('arenaLobby').style.display = 'block';
     document.getElementById('arenaGame').style.display = 'none';
+    document.getElementById('arenaLobby').style.display = 'block';
   }
+}
+
+function showLoadingArena(text) {
+  document.getElementById('qText').textContent = '';
+  document.getElementById('qOptions').innerHTML = `
+    <div style="text-align:center; padding:40px; color:var(--muted)">
+      <div class="loading-spin" style="margin-bottom:14px"></div>
+      <p>${text}</p>
+    </div>`;
 }
 
 function listenToMatch(matchId) {
   db.collection('matches').doc(matchId).onSnapshot(snap => {
     if(!snap.exists) return;
     const data = snap.data();
-    
-    console.log('status:', data.status, '| isP1:', arenaState.isPlayer1);
-
-    // لاعب 1 - لما ينضم منافس (تغير من waiting لـ asking)
-    if(data.status === 'asking' && arenaState.isPlayer1) {
-      document.getElementById('player2Name').textContent = data.player2?.name || 'منافس';
-      // فقط اعرض الفورم لو مو راهن يكتب سؤال
-      const formExists = document.getElementById('arenaQ');
-      if(!formExists) showQuestionForm();
-    }
-    
-    // لاعب 2 - لما يرسل اللاعب الأول سؤال
-    if(data.status === 'answering' && !arenaState.isPlayer1) {
+    document.getElementById('player1Score').textContent = data.player1?.score || 0;
+    document.getElementById('player2Score').textContent = data.player2?.score || 0;
+    if(data.status==='asking' && arenaState.isPlayer1 && !document.getElementById('arenaQ'))
+      showQuestionForm();
+    if(data.status==='answering' && !arenaState.isPlayer1) {
       const q = data.questions?.[data.currentQ];
       if(q) showQuestionToAnswer(q, data.currentQ, data.questions.length);
     }
-    
-    // لاعب 1 - بعد جواب اللاعب الثاني، سؤال جديد
-    if(data.status === 'asking' && arenaState.isPlayer1 && data.questions?.length > 0) {
-      const formExists = document.getElementById('arenaQ');
-      if(!formExists) showQuestionForm();
-    }
-
-    // لاعب 2 - لما ينتظر سؤال جديد
-    if(data.status === 'asking' && !arenaState.isPlayer1) {
-      const waiting = document.querySelector('.waiting-msg');
-      if(!waiting) showWaitingForQuestion();
-    }
-    
-    // تحديث النتائج
-    document.getElementById('player1Score').textContent = data.player1?.score || 0;
-    document.getElementById('player2Score').textContent = data.player2?.score || 0;
-    
-    // انتهت المباراة
-    if(data.status === 'finished') endArenaLive(data);
+    if(data.status==='asking' && !arenaState.isPlayer1)
+      showWaitingForQuestion();
+    if(data.status==='asking' && arenaState.isPlayer1 && data.questions?.length > 0 && !document.getElementById('arenaQ'))
+      showQuestionForm();
+    if(data.status==='finished') endArenaLive(data);
   });
 }
 
-// اللاعب الأول يكتب السؤال
 function showQuestionForm() {
-  document.getElementById('qOptions').innerHTML = '';
-  document.getElementById('qText').innerHTML = '';
-  
   document.getElementById('qNum').textContent = (arenaState.qIndex + 1);
-  document.getElementById('qTimer').textContent = '–';
-  
+  document.getElementById('qTimerBadge').textContent = '–';
   document.getElementById('qText').innerHTML = `
-    <div style="margin-bottom:12px; color:var(--gold); font-size:0.9em">
-      ${currentLang==='ar'?'اكتب سؤالك:':'Write your question:'}
+    <span style="color:var(--gold); font-size:0.85em; font-weight:700">✍️ اكتب سؤالك للمنافس:</span>`;
+  document.getElementById('qOptions').innerHTML = `
+    <input type="text" id="arenaQ" class="field-input" placeholder="السؤال..." style="margin-bottom:8px">
+    <div class="arena-input-group">
+      <input type="text" id="arenaOpt1" class="field-input" placeholder="✅ الإجابة الصحيحة" style="border-color:rgba(16,185,129,0.4)">
+      <input type="text" id="arenaOpt2" class="field-input" placeholder="خيار 2">
+      <input type="text" id="arenaOpt3" class="field-input" placeholder="خيار 3">
+      <input type="text" id="arenaOpt4" class="field-input" placeholder="خيار 4">
     </div>
-    <input type="text" id="arenaQ" class="field-input" 
-      placeholder="${currentLang==='ar'?'اكتب السؤال هنا...':'Type your question...'}" 
-      style="margin-bottom:10px">
-    <input type="text" id="arenaOpt1" class="field-input" 
-      placeholder="${currentLang==='ar'?'الخيار 1 (الصحيح ✅)':'Option 1 (Correct ✅)'}" 
-      style="margin-bottom:8px; border-color:var(--teal)">
-    <input type="text" id="arenaOpt2" class="field-input" 
-      placeholder="${currentLang==='ar'?'الخيار 2':'Option 2'}" 
-      style="margin-bottom:8px">
-    <input type="text" id="arenaOpt3" class="field-input" 
-      placeholder="${currentLang==='ar'?'الخيار 3':'Option 3'}" 
-      style="margin-bottom:8px">
-    <input type="text" id="arenaOpt4" class="field-input" 
-      placeholder="${currentLang==='ar'?'الخيار 4':'Option 4'}" 
-      style="margin-bottom:14px">
-    <button class="btn-premium" style="width:100%" onclick="submitQuestion()">
-      ${currentLang==='ar'?'📤 إرسال السؤال':'📤 Send Question'}
-    </button>
-  `;
+    <button class="btn btn-primary btn-w100" style="margin-top:8px" onclick="submitQuestion()">
+      <i class="ri-send-plane-fill"></i> إرسال السؤال
+    </button>`;
 }
 
-// إرسال السؤال لـ Firestore
 async function submitQuestion() {
   const q = document.getElementById('arenaQ')?.value.trim();
   const o1 = document.getElementById('arenaOpt1')?.value.trim();
   const o2 = document.getElementById('arenaOpt2')?.value.trim();
   const o3 = document.getElementById('arenaOpt3')?.value.trim();
   const o4 = document.getElementById('arenaOpt4')?.value.trim();
-  
-  if(!q || !o1 || !o2) {
-    showToast('⚠️ ' + (currentLang==='ar'?'أدخل السؤال وخيارين على الأقل':'Enter question and 2 options'));
-    return;
-  }
-  
-  const opts = [o1, o2, o3, o4].filter(o => o);
-  const newQ = { q, opts, ans: 0 }; // الجواب الصح دائماً هو الخيار الأول
-  
-  const matchSnap = await db.collection('matches').doc(arenaMatchId).get();
-  const questions = matchSnap.data().questions || [];
-  questions.push(newQ);
-  
+  if(!q || !o1 || !o2) return showToast('⚠️ أدخل السؤال وخيارين على الأقل');
+  const opts = [o1,o2,o3,o4].filter(Boolean);
+  const snap = await db.collection('matches').doc(arenaMatchId).get();
+  const questions = snap.data().questions || [];
+  questions.push({ q, opts, ans:0 });
   await db.collection('matches').doc(arenaMatchId).update({
-    questions,
-    currentQ: questions.length - 1,
-    status: 'answering'
+    questions, currentQ:questions.length-1, status:'answering'
   });
-  
-  // اللاعب الأول ينتظر الجواب
-  document.getElementById('qText').innerHTML = '';
+  document.getElementById('qText').textContent = '';
   document.getElementById('qOptions').innerHTML = `
     <div style="text-align:center; padding:30px; color:var(--muted)">
-      <i class="ri-time-line" style="font-size:40px; color:var(--gold)"></i>
-      <p style="margin-top:10px">${currentLang==='ar'?'بانتظار جواب المنافس...':'Waiting for opponent answer...'}</p>
-    </div>
-  `;
+      <div class="loading-spin" style="margin-bottom:12px"></div>
+      <p>بانتظار جواب المنافس...</p>
+    </div>`;
   arenaState.qIndex++;
 }
 
-// اللاعب الثاني يشوف السؤال ويجاوب
-function showQuestionToAnswer(q, qIndex, total) {
-  document.getElementById('qNum').textContent = qIndex + 1;
+function showQuestionToAnswer(q, qIdx, total) {
+  document.getElementById('qNum').textContent = qIdx+1;
   document.getElementById('qText').textContent = q.q;
-  
-  // مؤقت
   arenaState.qTimer = 15;
   clearInterval(arenaState.timer);
+  const timerEl = document.getElementById('qTimerBadge');
   arenaState.timer = setInterval(() => {
     arenaState.qTimer--;
-    document.getElementById('qTimer').textContent = arenaState.qTimer;
-    if(arenaState.qTimer <= 0) {
-      clearInterval(arenaState.timer);
-      submitAnswer(-1, q.ans, qIndex, total); // انتهى الوقت
-    }
+    timerEl.textContent = arenaState.qTimer + 's';
+    timerEl.className = 'q-timer-badge' + (arenaState.qTimer<=5?' urgent':'');
+    if(arenaState.qTimer <= 0) { clearInterval(arenaState.timer); submitAnswer(-1, q.ans, qIdx, total); }
   }, 1000);
-  
-  document.getElementById('qOptions').innerHTML = q.opts.map((o,i) => `
-    <div class="q-option" onclick="submitAnswer(${i}, ${q.ans}, ${qIndex}, ${total})">${o}</div>
-  `).join('');
+  document.getElementById('qOptions').innerHTML = q.opts.map((o,i) =>
+    `<div class="q-opt" onclick="submitAnswer(${i},${q.ans},${qIdx},${total})">${o}</div>`
+  ).join('');
 }
 
-async function submitAnswer(chosen, correct, qIndex, total) {
+async function submitAnswer(chosen, correct, qIdx, total) {
   clearInterval(arenaState.timer);
-  
-  const opts = document.querySelectorAll('.q-option');
-  if(opts[correct]) opts[correct].classList.add('correct');
-  if(chosen !== correct && chosen >= 0 && opts[chosen]) opts[chosen].classList.add('wrong');
-  
-  const matchSnap = await db.collection('matches').doc(arenaMatchId).get();
-  const data = matchSnap.data();
-  let newScore = data.player2?.score || 0;
-  if(chosen === correct) newScore++;
-  
-  // هل انتهت الأسئلة؟ (5 أسئلة مثلاً)
-  const isFinished = qIndex >= 4;
-  
-  await db.collection('matches').doc(arenaMatchId).update({
-    'player2.score': newScore,
-    status: isFinished ? 'finished' : 'asking'
+  document.querySelectorAll('.q-opt').forEach((el, i) => {
+    if(i===correct) el.classList.add('correct');
+    else if(i===chosen) el.classList.add('wrong');
+    el.style.pointerEvents = 'none';
   });
-  
-  if(!isFinished) {
-    setTimeout(() => {
-      document.getElementById('qOptions').innerHTML = `
-        <div style="text-align:center; padding:30px; color:var(--muted)">
-          <i class="ri-pencil-line" style="font-size:40px; color:var(--gold)"></i>
-          <p style="margin-top:10px">${currentLang==='ar'?'بانتظار سؤال جديد...':'Waiting for next question...'}</p>
-        </div>
-      `;
-      document.getElementById('qText').textContent = '';
-    }, 1000);
+  const snap = await db.collection('matches').doc(arenaMatchId).get();
+  let score = snap.data().player2?.score || 0;
+  if(chosen===correct) { score++; spawnConfetti(); }
+  const finished = qIdx >= 4;
+  await db.collection('matches').doc(arenaMatchId).update({
+    'player2.score': score, status: finished?'finished':'asking'
+  });
+  if(!finished) {
+    setTimeout(() => { showWaitingForQuestion(); document.getElementById('qText').textContent=''; }, 1200);
   }
 }
+
 function showWaitingForQuestion() {
   document.getElementById('qText').textContent = '';
+  document.getElementById('qTimerBadge').textContent = '–';
   document.getElementById('qOptions').innerHTML = `
-    <div class="waiting-msg" style="text-align:center; padding:30px; color:var(--muted)">
-      <i class="ri-pencil-line" style="font-size:40px; color:var(--gold)"></i>
-      <p style="margin-top:10px">
-        ${currentLang==='ar'?'بانتظار سؤال المنافس...':'Waiting for opponent question...'}
-      </p>
-    </div>
-  `;
+    <div style="text-align:center; padding:30px; color:var(--muted)">
+      <div class="loading-spin" style="margin-bottom:12px"></div>
+      <p>بانتظار سؤال المنافس...</p>
+    </div>`;
 }
 
 async function endArenaLive(data) {
-  const isP1 = data.player1?.uid === currentUser.uid;
-  const myScore = isP1 ? data.player1?.score : data.player2?.score;
-  const oppScore = isP1 ? data.player2?.score : data.player1?.score;
-  const won = myScore > oppScore;
-  
+  const isP1 = data.player1?.uid === currentUser?.uid;
+  const my = isP1?data.player1?.score:data.player2?.score;
+  const op = isP1?data.player2?.score:data.player1?.score;
+  const won = my > op;
   if(won) {
-    userProfile.arenaWins = (userProfile.arenaWins||0) + 1;
-    document.getElementById('arenaWins').textContent = userProfile.arenaWins;
-    saveProfile();
+    userProfile.arenaWins = (userProfile.arenaWins||0)+1;
+    userProfile.arenaRating = (userProfile.arenaRating||1000)+25;
+    spawnConfetti(); spawnConfetti(); spawnConfetti();
+  } else if(my < op) {
+    userProfile.arenaRating = Math.max(800, (userProfile.arenaRating||1000)-15);
   }
-  
-  showToast(won 
-    ? '🏆 '+(currentLang==='ar'?'انتصرت!':'You won!') 
-    : myScore === oppScore 
-      ? '🤝 '+(currentLang==='ar'?'تعادل!':'Draw!')
-      : '😤 '+(currentLang==='ar'?'المرة القادمة!':'Better luck!'));
-  
+  document.getElementById('arenaWins').textContent = userProfile.arenaWins || 0;
+  document.getElementById('arenaRating').textContent = userProfile.arenaRating || 1000;
+  document.getElementById('arenaRatingDisplay').textContent = 'التقييم: ' + (userProfile.arenaRating||1000);
+  saveProfile();
+  showToast(won?'🏆 انتصرت!':my===op?'🤝 تعادل!':'😤 حاول مرة أخرى!');
   setTimeout(() => {
-    document.getElementById('arenaGame').style.display = 'none';
-    document.getElementById('arenaLobby').style.display = 'block';
-    arenaMatchId = null;
+    document.getElementById('arenaGame').style.display='none';
+    document.getElementById('arenaLobby').style.display='block';
+    arenaMatchId=null;
   }, 3000);
 }
 
-// التحدي الفردي يبقى كما هو (ضد AI)
-async function startSoloChallenge() {
-  arenaState.questions = arenaQuestions[currentLang] || arenaQuestions['ar'];
-  arenaState.qIndex = 0;
-  arenaState.p1 = 0;
-  arenaState.p2 = 0;
-  arenaState.isPlayer1 = true;
-  arenaMatchId = null;
-  
-  document.getElementById('arenaLobby').style.display = 'none';
-  document.getElementById('arenaGame').style.display = 'block';
+// ── Solo ──
+function startSoloChallenge() {
+  arenaState.questions = arenaQuestions[currentLang] || arenaQuestions.ar;
+  arenaState.qIndex = 0; arenaState.p1 = 0; arenaState.p2 = 0;
+  arenaState.isPlayer1 = true; arenaMatchId = null;
+  document.getElementById('arenaLobby').style.display='none';
+  document.getElementById('arenaGame').style.display='block';
   document.getElementById('player1Name').textContent = userProfile.name || 'أنت';
   document.getElementById('player2Name').textContent = '🤖 AI';
-  
-  loadArenaQuestionSolo();
+  loadSoloQ();
 }
 
-function loadArenaQuestionSolo() {
+function loadSoloQ() {
   const qs = arenaState.questions;
   if(arenaState.qIndex >= qs.length) {
-    const won = arenaState.p1 >= arenaState.p2;
-    if(won) { userProfile.arenaWins = (userProfile.arenaWins||0)+1; saveProfile(); }
-    showToast(won ? '🏆 انتصرت!' : '😤 المرة القادمة!');
-    document.getElementById('arenaGame').style.display = 'none';
-    document.getElementById('arenaLobby').style.display = 'block';
+    const won = arenaState.p1 > arenaState.p2;
+    if(won) {
+      userProfile.arenaWins = (userProfile.arenaWins||0)+1;
+      userProfile.arenaRating = (userProfile.arenaRating||1000)+10;
+      spawnConfetti(); spawnConfetti();
+    }
+    document.getElementById('arenaWins').textContent = userProfile.arenaWins||0;
+    document.getElementById('arenaRating').textContent = userProfile.arenaRating||1000;
+    saveProfile();
+    showToast(won?'🏆 انتصرت!':'😤 حاول مرة أخرى!');
+    setTimeout(()=>{ document.getElementById('arenaGame').style.display='none'; document.getElementById('arenaLobby').style.display='block'; },2500);
     return;
   }
   const q = qs[arenaState.qIndex];
-  document.getElementById('qNum').textContent = arenaState.qIndex + 1;
+  document.getElementById('qNum').textContent = arenaState.qIndex+1;
   document.getElementById('qText').textContent = q.q;
-  document.getElementById('qOptions').innerHTML = q.opts.map((o,i) => `
-    <div class="q-option" onclick="answerSolo(${i},${q.ans})">${o}</div>
-  `).join('');
+  document.getElementById('qOptions').innerHTML = q.opts.map((o,i)=>
+    `<div class="q-opt" onclick="answerSolo(${i},${q.ans})">${o}</div>`
+  ).join('');
   arenaState.qTimer = 10;
   clearInterval(arenaState.timer);
+  const tb = document.getElementById('qTimerBadge');
   arenaState.timer = setInterval(() => {
     arenaState.qTimer--;
-    document.getElementById('qTimer').textContent = arenaState.qTimer;
-    if(arenaState.qTimer <= 0) {
+    tb.textContent = arenaState.qTimer+'s';
+    tb.className = 'q-timer-badge'+(arenaState.qTimer<=3?' urgent':'');
+    if(arenaState.qTimer<=0) {
       clearInterval(arenaState.timer);
       arenaState.p2++;
       document.getElementById('player2Score').textContent = arenaState.p2;
-      setTimeout(() => { arenaState.qIndex++; loadArenaQuestionSolo(); }, 800);
+      setTimeout(()=>{ arenaState.qIndex++; loadSoloQ(); },700);
     }
-  }, 1000);
+  },1000);
 }
 
 function answerSolo(chosen, correct) {
   clearInterval(arenaState.timer);
-  const opts = document.querySelectorAll('.q-option');
-  opts[correct].classList.add('correct');
-  if(chosen !== correct) {
-    opts[chosen].classList.add('wrong');
-    arenaState.p2++;
-    document.getElementById('player2Score').textContent = arenaState.p2;
-  } else {
-    arenaState.p1++;
-    document.getElementById('player1Score').textContent = arenaState.p1;
-  }
-  setTimeout(() => { arenaState.qIndex++; loadArenaQuestionSolo(); }, 1000);
+  document.querySelectorAll('.q-opt').forEach((el,i)=>{
+    if(i===correct) el.classList.add('correct');
+    else if(i===chosen) el.classList.add('wrong');
+    el.style.pointerEvents='none';
+  });
+  if(chosen===correct) { arenaState.p1++; document.getElementById('player1Score').textContent=arenaState.p1; spawnConfetti(); }
+  else { arenaState.p2++; document.getElementById('player2Score').textContent=arenaState.p2; }
+  setTimeout(()=>{ arenaState.qIndex++; loadSoloQ(); },900);
 }
 
-// ===========================
-// Navigation & Utilities
-// ===========================
+// ══════════════════════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════════════════════
 function goPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page===pageId));
+  document.querySelectorAll('.nav-item').forEach(n =>
+    n.classList.toggle('active', n.dataset.page===pageId)
+  );
   window.scrollTo(0,0);
-  if(pageId==='pageGroup') document.getElementById('groupNotif').style.display='none';
+  if(pageId==='pageGroup') { document.getElementById('groupNotif').style.display='none'; }
+  if(pageId==='pageMizan') updateMizan();
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
 }
 
-// Init
+function spawnConfetti() {
+  const emojis = ['⭐','✨','🌟','💫','🎉','🏆'];
+  const el = document.createElement('div');
+  el.className = 'confetti';
+  el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left = Math.random()*90 + 5 + 'vw';
+  el.style.top = Math.random()*40 + 10 + 'vh';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1600);
+}
+
+// ── INIT ──
 updatePomUI();
-</script></body>
+</script>
+
+</body>
 </html>
